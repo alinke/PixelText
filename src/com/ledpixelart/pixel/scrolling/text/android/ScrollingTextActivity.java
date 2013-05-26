@@ -103,7 +103,7 @@ public class ScrollingTextActivity extends IOIOActivity
     private Context frameContext;
 	private boolean debug_;
 	private static int appAlreadyStarted = 0;
-	private int scrollSpeedProgress = 1;
+	//private int scrollSpeedProgress = 1;
 	private int scrollSpeedValue = 1;
 	
 
@@ -117,7 +117,7 @@ public class ScrollingTextActivity extends IOIOActivity
         scrollSpeedSeekBar_ = (SeekBar)findViewById(R.id.SeekBar);
         scrollSpeedSeekBar_.setOnSeekBarChangeListener(OnSeekBarProgress);
         //set the maximum of seekbars as 100%
-        scrollSpeedSeekBar_.setMax(10);
+        scrollSpeedSeekBar_.setMax(9);
         
         
         toggleButton_ = (ToggleButton)findViewById(R.id.ToggleButton);
@@ -141,6 +141,7 @@ public class ScrollingTextActivity extends IOIOActivity
         //***************************
       
         scrollSpeedSeekBar_.setProgress(scrollSpeed);
+        scrollSpeedValue = scrollSpeed;
         
         if (noSleep == true) {        	      	
         	this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); //disables sleep mode
@@ -164,10 +165,10 @@ public class ScrollingTextActivity extends IOIOActivity
 	            	if(s == scrollSpeedSeekBar_){
 	            		
 	            	//	scrollSpeedProgress = 0;
-	            		scrollSpeedValue = 0;
+	            		//scrollSpeedValue = 0;
 	            		
 	        		
-	            	scrollSpeedProgress = progress;
+	            	scrollSpeedValue = progress;
 	        		scrollSpeedtextView_.setText(Integer.toString(progress));
 	        		//scrollSpeedtextView_.setText(Integer.toString(progress*100/254));
 	            	}
@@ -357,7 +358,7 @@ public class ScrollingTextActivity extends IOIOActivity
 	            	paint.setColor(Color.GREEN);
 	            	Typeface tf = Typeface.create("Helvetica",Typeface.NORMAL);   	   
 	            	paint.setTypeface(tf);
-	            	paint.setTextSize(32);
+	            	paint.setTextSize(26);
 	            	paint.setFlags(Paint.ANTI_ALIAS_FLAG);
 	            	
 	            	
@@ -374,7 +375,9 @@ public class ScrollingTextActivity extends IOIOActivity
 	            
 	            try 
 	            {
-					Thread.sleep(120);
+					//Thread.sleep(10);
+	            	Thread.sleep(90 - (scrollSpeedValue*10));  //the max is 90
+	            	//Thread.sleep(1);
 				} 
 	            catch (InterruptedException e) 
 				{
