@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.ledpixelart.pixel.scrolling.text.android" android:versionCode="2" android:versionName="1.2">
+      
+       <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="10"/>
+      
+      <uses-permission android:name="android.permission.BLUETOOTH"></uses-permission> 
+      <uses-permission android:name="android.permission.INTERNET"></uses-permission> 
+      <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+     
+      <application android:icon="@drawable/icon" android:label="@string/app_name">
+          
+            <uses-library android:name="com.android.future.usb.accessory" android:required="false" />	
+            
+            
+            <activity android:name="ArtSplash"
+                  android:label="@string/app_name"
+                  android:screenOrientation="portrait"
+                  android:theme="@android:style/Theme.NoTitleBar">
+                  <intent-filter>
+                        <action android:name="android.intent.action.MAIN" />
+                        <category android:name="android.intent.category.LAUNCHER"/>
+                  </intent-filter>
+            </activity>  
+                 
+            <activity android:name=".ScrollingTextActivity"  android:screenOrientation="portrait" android:launchMode="singleTask"> 
+          
+                    <intent-filter>
+                	<action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
+            		</intent-filter>
+            
+            		<meta-data android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
+                                  android:resource="@xml/accessory_filter" />
+          
+            
+       </activity>  
+       
+       <activity android:name=".preferences" android:screenOrientation="portrait" android:launchMode="singleTask"></activity>
+           
+      </application>
+      
+   
+      
+</manifest>
+
+
+
+
