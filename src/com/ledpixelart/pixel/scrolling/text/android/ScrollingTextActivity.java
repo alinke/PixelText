@@ -327,7 +327,7 @@ public class ScrollingTextActivity extends IOIOActivity
 			{
 				RgbLedMatrix.Matrix type = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32;
 				ledMatrix = ioio_.openRgbLedMatrix(type);
-				
+				deviceFound = 1; //set this flag so the pop up doesn't come
 //				Toast toast = Toast.makeText(getApplicationContext() , "matrix obtained", Toast.LENGTH_SHORT);
 //				toast.show();
 				

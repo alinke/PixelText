@@ -43,22 +43,20 @@
 		    android:layout_width="50dp"
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
-		    android:ems="10" 
-		    android:text="@string/defaultScrollSpeed" />
-
-		   
-		
+		    android:ems="10"
+		    android:text="@string/defaultScrollSpeed"
+		    android:visibility="invisible" />
 
 	</LinearLayout>
 
 	<ToggleButton
-		android:id="@+id/ToggleButton"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center_horizontal"
-		android:layout_margin="20px"
-		android:textOff="Led is OFF"
-		android:textOn="Led is ON"
-		/>
+	    android:id="@+id/ToggleButton"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center_horizontal"
+	    android:layout_margin="20px"
+	    android:textOff="Led is OFF"
+	    android:textOn="Led is ON"
+	    android:visibility="invisible" />
 	
 </LinearLayout>
