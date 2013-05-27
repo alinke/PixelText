@@ -62,7 +62,7 @@ public class Pixel
     	originalImage = Bitmap.createBitmap(64,  64, Bitmap.Config.RGB_565);
     	Canvas canvas = new Canvas(originalImage);    	
     	
-    	float y = 35; //this controls the centering of the scrolling text, was originally 25 but this put the text too high 	    
+    	float y = 40; //this controls the centering of the scrolling text, was originally 25 but this put the text too high 	    
     	
     	canvas.drawText(text, x, y, paint);
     	
@@ -73,7 +73,7 @@ public class Pixel
     	{
     		resizedFlag = 1;
     		
-			 //the iamge is not the right dimensions, so we need to re-size
+			 //the image is not the right dimensions, so we need to re-size
     		float scaleWidth = ((float) KIND.width) / width_original;
     		float scaleHeight = ((float) KIND.height) / height_original;
    		 	 

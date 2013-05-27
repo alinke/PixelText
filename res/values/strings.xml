@@ -3,7 +3,7 @@
     <string name="app_name">PIXEL - Scrolling Text</string>
     <string name="seekbar_label">Scrolling Speed:</string>
     <string name="textbox_label">Enter Scrolling Text:</string>
-    <string name="defaultText">Type Scrolling Text Here</string>
+    <string name="defaultText">Type Text Here</string>
     <string name="defaultScrollSpeed"></string>
 
    

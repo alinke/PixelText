@@ -21,6 +21,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -33,18 +34,28 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+
+import com.larswerkman.colorpicker.ColorPicker;
+import com.larswerkman.colorpicker.ColorPicker.OnColorChangedListener;
+import com.larswerkman.colorpicker.OpacityBar;
+import com.larswerkman.colorpicker.SVBar;
 import com.ledpixelart.pixel.hardware.Pixel;
 /*
 import java.awt.Color;
@@ -55,15 +66,17 @@ import java.awt.image.BufferedImage;
 */
 
 @SuppressLint("ParserError")
-public class ScrollingTextActivity extends IOIOActivity 
+public class ScrollingTextActivity extends IOIOActivity implements OnColorChangedListener 
 {
 	private TextView textView_;
 	private TextView scrollSpeedtextView_;	
 	private SeekBar scrollSpeedSeekBar_;	
+	private SeekBar fontSizeSeekBar_;	
 	private ToggleButton toggleButton_;	
 	private EditText textField;	
-	private int x;	
 	private SharedPreferences prefs;
+	private SharedPreferences savePrefs;
+	private Editor mEditor;
 	private Resources resources;
 	private String app_ver;	
 	private int matrix_model;
@@ -105,6 +118,25 @@ public class ScrollingTextActivity extends IOIOActivity
 	private static int appAlreadyStarted = 0;
 	//private int scrollSpeedProgress = 1;
 	private int scrollSpeedValue = 1;
+	private int fontSizeValue = 26;
+	
+	private ColorPicker picker;
+	private SVBar svBar;
+	private OpacityBar opacityBar;
+	private Button button;
+	private TextView text;
+	private int ColorWheel;
+	private Paint paint;
+	private Typeface tf;
+	private String scrollingText; //used for scrolling text
+	private Rect bounds;
+	private int resetX;
+	private int messageWidth;
+	private int x;	
+	private int stepSize = 6;
+	private String prefFontSize;
+	private int prefColor;
+	private String prefScrollSpeed;
 	
 
     @Override
@@ -117,14 +149,22 @@ public class ScrollingTextActivity extends IOIOActivity
         scrollSpeedSeekBar_ = (SeekBar)findViewById(R.id.SeekBar);
         scrollSpeedSeekBar_.setOnSeekBarChangeListener(OnSeekBarProgress);
         //set the maximum of seekbars as 100%
-        scrollSpeedSeekBar_.setMax(9);
+        scrollSpeedSeekBar_.setMax(10);
         
+        fontSizeSeekBar_ = (SeekBar)findViewById(R.id.FontSeekBar);
+        fontSizeSeekBar_.setOnSeekBarChangeListener(OnSeekBarProgress);
         
         toggleButton_ = (ToggleButton)findViewById(R.id.ToggleButton);
         
-        textField = (EditText) findViewById(R.id.textField);
-        
+        textField = (EditText) findViewById(R.id.textField);  //the scrolling text
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        
+    	prefs = getSharedPreferences("appSave", MODE_PRIVATE);
+        prefFontSize = prefs.getString("fontKey", "14");
+        prefScrollSpeed = prefs.getString("scrollSpeedKey", "8");
+        
+        prefColor = prefs.getInt("colorKey", 333333);
+       // showToast("font size: " + prefColor);
         
         try
 	        {
@@ -139,9 +179,33 @@ public class ScrollingTextActivity extends IOIOActivity
         resources = this.getResources();
         setPreferences();
         //***************************
+        
+        picker = (ColorPicker) findViewById(R.id.picker);
+		svBar = (SVBar) findViewById(R.id.svbar);
+		opacityBar = (OpacityBar) findViewById(R.id.opacitybar);
+		button = (Button) findViewById(R.id.button1);
+		text = (TextView) findViewById(R.id.textView1);
+		
+		picker.addSVBar(svBar);
+		picker.addOpacityBar(opacityBar);
+		picker.setOnColorChangedListener(this);
+		
+		button.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				text.setTextColor(picker.getColor());
+				picker.setOldCenterColor(picker.getColor());
+			}
+		});
       
-        scrollSpeedSeekBar_.setProgress(scrollSpeed);
-        scrollSpeedValue = scrollSpeed;
+       // scrollSpeedSeekBar_.setProgress(scrollSpeed);
+        scrollSpeedSeekBar_.setProgress(Integer.parseInt(prefScrollSpeed.toString()));     
+       // scrollSpeedValue = scrollSpeed;
+        scrollSpeedValue = Integer.parseInt(prefScrollSpeed.toString());
+        fontSizeSeekBar_.setProgress(Integer.parseInt(prefFontSize.toString()));
+        
+       // prefFontSize
         
         if (noSleep == true) {        	      	
         	this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); //disables sleep mode
@@ -152,8 +216,48 @@ public class ScrollingTextActivity extends IOIOActivity
  		
  		context = getApplicationContext();
         enableUi(true);
-    }
-    
+        
+        bounds = new Rect();
+        
+        paint = new Paint();
+        //ColorWheel = Color.RED;
+    	//paint.setColor(ColorWheel);
+        
+    	if (prefColor != 333333) {   //let's set the last color from prefs
+    		ColorWheel = prefColor;
+    		paint.setColor(prefColor); 
+    	}
+    	else {
+    		ColorWheel = Color.GREEN;
+        	paint.setColor(ColorWheel);
+    	}
+    	
+    	//paint.setColor(Color.GREEN);
+    	tf = Typeface.create("Helvetica",Typeface.NORMAL);   	   
+    	paint.setTypeface(tf);
+    	
+    	//this is the intial font size setting, not this is not the progress bar setting
+    	//paint.setTextSize(50);
+    	
+    	int prefFontSizeNum = Integer.parseInt(prefFontSize.toString());
+        prefFontSizeNum = ((int)Math.round(prefFontSizeNum/stepSize))*stepSize + 16;
+		paint.setTextSize(prefFontSizeNum);
+    	
+    	
+    	paint.setFlags(Paint.ANTI_ALIAS_FLAG);
+    	
+    	
+    	textField.addTextChangedListener(new TextWatcher(){  //had to add this , without it the text will disappear sometimes when charcters are removed, x becomes higher than the message length
+            public void afterTextChanged(Editable s) {
+            	x = 64;
+            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+            public void onTextChanged(CharSequence s, int start, int before, int count){}
+        }); 
+    	
+    	
+    	
+    }  //end oncreate
 
     OnSeekBarChangeListener OnSeekBarProgress =
         	new OnSeekBarChangeListener() {
@@ -163,18 +267,32 @@ public class ScrollingTextActivity extends IOIOActivity
 	            if(touch){
 	        	
 	            	if(s == scrollSpeedSeekBar_){
-	            		
-	            	//	scrollSpeedProgress = 0;
-	            		//scrollSpeedValue = 0;
-	            		
-	        		
-	            	scrollSpeedValue = progress;
-	        		scrollSpeedtextView_.setText(Integer.toString(progress));
-	        		//scrollSpeedtextView_.setText(Integer.toString(progress*100/254));
+		            	scrollSpeedValue = progress;
+		        		scrollSpeedtextView_.setText(Integer.toString(progress));
+		        		
+		        		mEditor = prefs.edit();
+		                mEditor.putString("scrollSpeedKey", String.valueOf(scrollSpeedValue));
+		                mEditor.commit();
+		        		
 	            	}
+	            	    
+	            	if(s == fontSizeSeekBar_) {
+	            		int rawProgress = progress;
+	            		progress = ((int)Math.round(progress/stepSize))*stepSize + 16;
+	            		fontSizeValue = progress;
+	            		paint.setTextSize(fontSizeValue);
+	            	    mEditor = prefs.edit();
+	            		mEditor.putString("fontKey", String.valueOf(rawProgress));
+	            		mEditor.commit();
+	            	    //showToast("font size: " + String.valueOf(fontSizeValue));
+	            		x=64;
+		            }
+	            	
+	            	
 	            }
-            	
-        	}
+      }
+        	
+	
     
         	public void onStartTrackingTouch(SeekBar s){
 
@@ -184,7 +302,18 @@ public class ScrollingTextActivity extends IOIOActivity
 
         	}
     };
-   	
+    
+    public void onColorChanged(int color) {
+    	ColorWheel = color;
+    	//let's save the last color picked so the user doesn't have to re-enter next time they run the app
+    	mEditor = prefs.edit();
+ 	//	mEditor.putString("colorKey", String.valueOf(color));
+ 		mEditor.putInt("colorKey", ColorWheel);
+ 		mEditor.commit();
+    	
+    	//showToast(String.valueOf(ColorWheel));
+		//gives the color when it's changed.
+	}
 
 	 private  void showToast(final String msg) {
 	 		runOnUiThread(new Runnable() {
@@ -253,9 +382,9 @@ public class ScrollingTextActivity extends IOIOActivity
      noSleep = prefs.getBoolean("pref_noSleep", false);
      debug_ = prefs.getBoolean("pref_debugMode", false);
      
-     scrollSpeed = Integer.valueOf(prefs.getString(   //the selected RGB LED Matrix Type
- 	        resources.getString(R.string.selected_scrollSpeed),
- 	        resources.getString(R.string.scrollSpeed_default_value))); 
+     //scrollSpeed = Integer.valueOf(prefs.getString(   //the selected RGB LED Matrix Type
+ 	   //     resources.getString(R.string.selected_scrollSpeed),
+ 	    //    resources.getString(R.string.scrollSpeed_default_value))); 
      
           
      matrix_model = Integer.valueOf(prefs.getString(   //the selected RGB LED Matrix Type
@@ -351,21 +480,26 @@ public class ScrollingTextActivity extends IOIOActivity
 			{
 //				int w = 64;	            
 
-	            Rect bounds = new Rect();
+	         //   Rect bounds = new Rect();
 	            try 
 	            {	            	
-	            	Paint paint = new Paint();
-	            	paint.setColor(Color.GREEN);
-	            	Typeface tf = Typeface.create("Helvetica",Typeface.NORMAL);   	   
-	            	paint.setTypeface(tf);
-	            	paint.setTextSize(26);
-	            	paint.setFlags(Paint.ANTI_ALIAS_FLAG);
+	            	//if (textField.getText().toString() != null) {
+	            		 // scrollingText = textField.getText().toString();
 	            	
+	            	//Paint paint = new Paint();
+	            	paint.setColor(ColorWheel);
+	            //	paint.setColor(Color.GREEN);
+	            	//Typeface tf = Typeface.create("Helvetica",Typeface.NORMAL);   	   
+	            	//paint.setTypeface(tf);
+	            	//paint.setTextSize(26);
+	            	//paint.setFlags(Paint.ANTI_ALIAS_FLAG);
 	            	
-	            	String text = textField.getText().toString();
-	            	paint.getTextBounds(text, 0, text.length(), bounds);
+	            
+	               // scrollingText = textField.getText().toString();
 	            	
-	                pixel.writeImagetoMatrix(x, text, paint);
+	                scrollingText = textField.getText().toString();
+	            	paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
+	                pixel.writeImagetoMatrix(x, scrollingText, paint);
 	                
 	            } 
 	            catch (ConnectionLostException ex) 
@@ -385,8 +519,10 @@ public class ScrollingTextActivity extends IOIOActivity
 				}
 	            
 	                        
-	            int messageWidth = bounds.width();            
-	            int resetX = 0 - messageWidth;
+	            messageWidth = bounds.width();        
+	            System.out.println("message width" + " " + messageWidth);
+	            
+	            resetX = 0 - messageWidth;
 	            
 	            if(x == resetX)
 	            {
@@ -396,6 +532,9 @@ public class ScrollingTextActivity extends IOIOActivity
 	            {
 	                x--;
 	            }
+	            System.out.println("resetX: " + resetX);
+	            System.out.println("x: " + x);
+	            
 	            
 			}	
 		}
