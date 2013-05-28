@@ -62,7 +62,7 @@ public class Pixel
     	originalImage = Bitmap.createBitmap(64,  64, Bitmap.Config.RGB_565);
     	Canvas canvas = new Canvas(originalImage);    	
     	
-    	float y = 40; //this controls the centering of the scrolling text, was originally 25 but this put the text too high 	    
+    	float y = 45; //this controls the centering of the scrolling text, was originally 25 but this put the text too high 	    
     	
     	canvas.drawText(text, x, y, paint);
     	

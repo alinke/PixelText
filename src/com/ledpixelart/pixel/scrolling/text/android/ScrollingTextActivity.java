@@ -44,9 +44,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -69,10 +73,10 @@ import java.awt.image.BufferedImage;
 public class ScrollingTextActivity extends IOIOActivity implements OnColorChangedListener 
 {
 	private TextView textView_;
-	private TextView scrollSpeedtextView_;	
+	//private TextView scrollSpeedtextView_;	
 	private SeekBar scrollSpeedSeekBar_;	
 	private SeekBar fontSizeSeekBar_;	
-	private ToggleButton toggleButton_;	
+	//private ToggleButton toggleButton_;	
 	private EditText textField;	
 	private SharedPreferences prefs;
 	private SharedPreferences savePrefs;
@@ -137,6 +141,13 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	private String prefFontSize;
 	private int prefColor;
 	private String prefScrollSpeed;
+	private String prefScrollingText;
+	
+	private Spinner fontSpinner;
+	
+	private Typeface selectedFont;
+	private String fontlist[];
+	private int prefFontPosition;
 	
 
     @Override
@@ -145,7 +156,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        scrollSpeedtextView_ = (TextView)findViewById(R.id.scrollSpeedtextView);
+     //   scrollSpeedtextView_ = (TextView)findViewById(R.id.scrollSpeedtextView);
         scrollSpeedSeekBar_ = (SeekBar)findViewById(R.id.SeekBar);
         scrollSpeedSeekBar_.setOnSeekBarChangeListener(OnSeekBarProgress);
         //set the maximum of seekbars as 100%
@@ -154,7 +165,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         fontSizeSeekBar_ = (SeekBar)findViewById(R.id.FontSeekBar);
         fontSizeSeekBar_.setOnSeekBarChangeListener(OnSeekBarProgress);
         
-        toggleButton_ = (ToggleButton)findViewById(R.id.ToggleButton);
+        //toggleButton_ = (ToggleButton)findViewById(R.id.ToggleButton);  //not used
         
         textField = (EditText) findViewById(R.id.textField);  //the scrolling text
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -162,9 +173,12 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     	prefs = getSharedPreferences("appSave", MODE_PRIVATE);
         prefFontSize = prefs.getString("fontKey", "14");
         prefScrollSpeed = prefs.getString("scrollSpeedKey", "8");
-        
+        prefScrollingText = prefs.getString("scrollingTextKey","Type Text Here");
         prefColor = prefs.getInt("colorKey", 333333);
+        prefFontPosition = prefs.getInt("fontPositionKey", 0);
        // showToast("font size: " + prefColor);
+        
+        textField.setText(prefScrollingText);
         
         try
 	        {
@@ -179,6 +193,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         resources = this.getResources();
         setPreferences();
         //***************************
+    
         
         picker = (ColorPicker) findViewById(R.id.picker);
 		svBar = (SVBar) findViewById(R.id.svbar);
@@ -220,8 +235,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         bounds = new Rect();
         
         paint = new Paint();
-        //ColorWheel = Color.RED;
-    	//paint.setColor(ColorWheel);
+      
         
     	if (prefColor != 333333) {   //let's set the last color from prefs
     		ColorWheel = prefColor;
@@ -232,24 +246,74 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         	paint.setColor(ColorWheel);
     	}
     	
-    	//paint.setColor(Color.GREEN);
-    	tf = Typeface.create("Helvetica",Typeface.NORMAL);   	   
-    	paint.setTypeface(tf);
     	
-    	//this is the intial font size setting, not this is not the progress bar setting
-    	//paint.setTextSize(50);
+        	
+        	
+        	//paint.setTypeface(tf);
+    	
+        //**** for the font drop down list
+        
+        fontSpinner = (Spinner) findViewById(R.id.fontSpinner);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+        this, R.array.font_options, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fontSpinner.setAdapter(adapter);
+
+        fontSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
+
+        {
+
+        public void onItemSelected(AdapterView<?> arg0, View arg1,
+        int arg2, long arg3)
+
+	    {
+	
+	        int index = arg0.getSelectedItemPosition();
+	
+	        // storing string resources into Array
+	        fontlist = getResources().getStringArray(R.array.font_options);
+	        
+	       //setFont is a function below in the code which sets the font based on the position passed
+	        setFont(index);
+	        x=64; //resetting the spacing
+	        
+	        //let's also save the font for the next time
+	    	mEditor = prefs.edit();
+            mEditor.putInt("fontPositionKey", index);
+            mEditor.commit();
+	      
+	    }
+
+        public void onNothingSelected(AdapterView<?> arg0) {
+        	
+
+        }
+
+        });
+    	
+      //let's set the font here from prefs 
+   	
+        setFont(prefFontPosition);
+        //we have the default font set so let's also set the spinner position so the user knows
+        fontSpinner.setSelection(prefFontPosition);
+   
     	
     	int prefFontSizeNum = Integer.parseInt(prefFontSize.toString());
         prefFontSizeNum = ((int)Math.round(prefFontSizeNum/stepSize))*stepSize + 16;
 		paint.setTextSize(prefFontSizeNum);
-    	
-    	
     	paint.setFlags(Paint.ANTI_ALIAS_FLAG);
     	
     	
     	textField.addTextChangedListener(new TextWatcher(){  //had to add this , without it the text will disappear sometimes when charcters are removed, x becomes higher than the message length
             public void afterTextChanged(Editable s) {
             	x = 64;
+            	//now let's save the user's entered scrolling text so the next time the app comes up, they don't have to re-type
+            	mEditor = prefs.edit();
+                mEditor.putString("scrollingTextKey", textField.getText().toString());
+                mEditor.commit();
+            	
             }
             public void beforeTextChanged(CharSequence s, int start, int count, int after){}
             public void onTextChanged(CharSequence s, int start, int before, int count){}
@@ -268,7 +332,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	        	
 	            	if(s == scrollSpeedSeekBar_){
 		            	scrollSpeedValue = progress;
-		        		scrollSpeedtextView_.setText(Integer.toString(progress));
+		        		//scrollSpeedtextView_.setText(Integer.toString(progress));
 		        		
 		        		mEditor = prefs.edit();
 		                mEditor.putString("scrollSpeedKey", String.valueOf(scrollSpeedValue));
@@ -307,15 +371,109 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     	ColorWheel = color;
     	//let's save the last color picked so the user doesn't have to re-enter next time they run the app
     	mEditor = prefs.edit();
- 	//	mEditor.putString("colorKey", String.valueOf(color));
  		mEditor.putInt("colorKey", ColorWheel);
  		mEditor.commit();
     	
-    	//showToast(String.valueOf(ColorWheel));
-		//gives the color when it's changed.
 	}
 
-	 private  void showToast(final String msg) {
+	 
+    private void setFont(int fontPosition) {
+    	
+    	  switch (fontPosition)  {
+	        
+	        case 0:
+	        	selectedFont = Typeface.create("Arial",Typeface.NORMAL); 
+	        	break;
+	        	
+	        case 1:
+	        	selectedFont = Typeface.create("Helvetica",Typeface.NORMAL); 
+	        	break;	
+	        	
+	        case 2:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/garmond.ttf");
+	        	break;		
+	        	
+	        case 3:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/handwriting.ttf");
+	        	break;
+	        	
+	        case 4:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/handwriting2.ttf");
+	        	break;	
+	        	
+	        case 5:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/neon80s.ttf");
+	        	break;	
+	        	
+	        case 6:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/pixel.ttf");
+	        	break;
+	        	
+	        case 7:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/bigbold.ttf");
+	        	break;	
+	        	
+	        case 8:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/bonzai.ttf");
+	        	break;	
+	        	
+	        case 9:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/cartoon.ttf");
+	        	break;
+	        	
+	        case 10:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/cursive.ttf");
+	        	break;	
+	        	
+	        case 11:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/christmas.ttf");
+	        	break;		
+	        	
+	        case 12:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/cocktails.ttf");
+	        	break;
+	        	
+	        case 13:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/grinch.ttf");
+	        	break;	
+	        	
+	        case 14:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/invaders.ttf");
+	        	break;	
+	        	
+	        case 15:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/seagram.ttf");
+	        	break;		
+	        	
+	        case 16:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/serif.ttf");
+	        	break;
+	        	
+	        case 17:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/serif-large.ttf");
+	        	break;	
+	        	
+	        case 18:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/simple.ttf");
+	        	break;	
+	        	
+	        case 19:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/simpleprint.ttf");
+	        	break;	
+	        	
+	        case 20:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/smalltype.ttf");
+	        	break;	
+	        	
+	        default:
+	        	selectedFont = Typeface.create("Arial",Typeface.NORMAL);
+	        	break;
+      }
+    	  //now set the font
+    	  paint.setTypeface(selectedFont);
+    }
+    
+    private  void showToast(final String msg) {
 	 		runOnUiThread(new Runnable() {
 	 			@Override
 	 			public void run() {
@@ -483,20 +641,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	         //   Rect bounds = new Rect();
 	            try 
 	            {	            	
-	            	//if (textField.getText().toString() != null) {
-	            		 // scrollingText = textField.getText().toString();
 	            	
-	            	//Paint paint = new Paint();
 	            	paint.setColor(ColorWheel);
-	            //	paint.setColor(Color.GREEN);
-	            	//Typeface tf = Typeface.create("Helvetica",Typeface.NORMAL);   	   
-	            	//paint.setTypeface(tf);
-	            	//paint.setTextSize(26);
-	            	//paint.setFlags(Paint.ANTI_ALIAS_FLAG);
-	            	
-	            
-	               // scrollingText = textField.getText().toString();
-	            	
 	                scrollingText = textField.getText().toString();
 	            	paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
 	                pixel.writeImagetoMatrix(x, scrollingText, paint);
@@ -509,9 +655,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	            
 	            try 
 	            {
-					//Thread.sleep(10);
+					
 	            	Thread.sleep(90 - (scrollSpeedValue*10));  //the max is 90
-	            	//Thread.sleep(1);
 				} 
 	            catch (InterruptedException e) 
 				{
@@ -520,7 +665,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	            
 	                        
 	            messageWidth = bounds.width();        
-	            System.out.println("message width" + " " + messageWidth);
+	           // System.out.println("message width" + " " + messageWidth);
 	            
 	            resetX = 0 - messageWidth;
 	            
@@ -532,8 +677,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	            {
 	                x--;
 	            }
-	            System.out.println("resetX: " + resetX);
-	            System.out.println("x: " + x);
+	         //   System.out.println("resetX: " + resetX);
+	        //    System.out.println("x: " + x);
 	            
 	            
 			}	
@@ -553,7 +698,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 			public void run() 
 			{
 				scrollSpeedSeekBar_.setEnabled(enable);
-				toggleButton_.setEnabled(enable);
+				//toggleButton_.setEnabled(enable);
 			}
 		});
 	}

@@ -4,12 +4,6 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingRight="5px"
-        android:text="@string/textbox_label" />
     
     
     <EditText
@@ -36,7 +30,7 @@
 	<TextView  
 	    android:layout_width="fill_parent" 
 	    android:layout_height="wrap_content" 
-	    android:text="Font Size"
+	    android:text="Font Size:"
 	    />
 	
 	<SeekBar
@@ -51,18 +45,28 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
-		android:paddingTop="20px">
+		android:paddingTop="1px">
 
-		<EditText
-		    android:id="@+id/scrollSpeedtextView"
-		    android:layout_width="50dp"
+		<TextView
+		    android:id="@+id/textView3"
+		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
-		    android:ems="10"
-		    android:text="@string/defaultScrollSpeed"
-		    android:visibility="invisible" />
+		    android:text="Font:"
+		    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+		
+		
+		<Spinner
+	    android:id="@+id/fontSpinner"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_weight="1"
+	    android:prompt="@string/fontSpinner_title" />
 
 	</LinearLayout>
+
+	
 	
 	  <com.larswerkman.colorpicker.ColorPicker
         android:id="@+id/picker"
@@ -107,14 +111,6 @@
  
     </LinearLayout>
 
-	<ToggleButton
-	    android:id="@+id/ToggleButton"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="center_horizontal"
-	    android:layout_margin="20px"
-	    android:textOff="Led is OFF"
-	    android:textOn="Led is ON"
-	    android:visibility="invisible" />
+
 	
 </LinearLayout>
