@@ -43,6 +43,19 @@
     <string name="dialogTitleMatrix">LED Panel Selection</string>
     <string name="matrix_default_value">3</string>   
     
+    <string name="scrollingKeyFrames">scrollingKeyFrames</string>
+    <string name="scrollingKeyFramesTitle">Scrolling Smoothness</string>
+    <string name="scrollingKeyFramesSummary">How smooth the text scrolls, less smoothness equals faster scrolling</string>    
+    <string name="scrollingKeyFramesDialogTitle">Scrolling Smoothness</string>
+    <string name="scrollingKeyFramesDefault">1</string> 
+    
+    <string name="menu_btPair_title">Bluetooth Pair PIXEL | Code 0000 or 4545</string>  
+    
+    <string name="versionString">App Version</string> 
+    <string name="BootloaderVersionString">Bootloader Version</string> 
+    <string name="FirmwareVersionString">Firmware Version</string> 
+    <string name="LibraryVersionString">Library Version</string> 
+    <string name="HardwareVersionString">Hardware Version</string> 
     
     <string name="selected_scrollSpeed">selected_scrollSpeed</string>
     <string name="scrollSpeedTitle">Text Scroll Speed</string>

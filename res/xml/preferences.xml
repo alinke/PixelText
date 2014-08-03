@@ -52,6 +52,15 @@
     android:dialogTitle="@string/dialogTitleMatrix"
     android:defaultValue="@string/matrix_default_value" />
     
+    <ListPreference
+    android:key="@string/scrollingKeyFrames"
+    android:title="@string/scrollingKeyFramesTitle"
+    android:summary="@string/scrollingKeyFramesSummary"
+    android:entries="@array/scrollingKeyFramesEntries"
+    android:entryValues="@array/scrollingKeyFramesValues"
+    android:dialogTitle="@string/scrollingKeyFramesDialogTitle"
+    android:defaultValue="@string/scrollingKeyFramesDefault" />
+    
     <CheckBoxPreference
     android:title="@string/debugMode"
     android:key="pref_debugMode"

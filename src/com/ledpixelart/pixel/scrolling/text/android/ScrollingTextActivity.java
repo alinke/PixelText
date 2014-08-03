@@ -3,6 +3,7 @@ package com.ledpixelart.pixel.scrolling.text.android;
 
 
 import ioio.lib.api.RgbLedMatrix;
+import ioio.lib.api.IOIO.VersionType;
 import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.BaseIOIOLooper;
 import ioio.lib.util.IOIOLooper;
@@ -11,6 +12,7 @@ import ioio.lib.util.android.IOIOActivity;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +36,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -56,10 +59,11 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-import com.larswerkman.colorpicker.ColorPicker;
-import com.larswerkman.colorpicker.ColorPicker.OnColorChangedListener;
-import com.larswerkman.colorpicker.OpacityBar;
-import com.larswerkman.colorpicker.SVBar;
+
+import com.larswerkman.holocolorpicker.ColorPicker;
+import com.larswerkman.holocolorpicker.ColorPicker.OnColorChangedListener;
+import com.larswerkman.holocolorpicker.OpacityBar;
+import com.larswerkman.holocolorpicker.SVBar;
 import com.ledpixelart.pixel.hardware.Pixel;
 /*
 import java.awt.Color;
@@ -77,7 +81,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	private SeekBar scrollSpeedSeekBar_;	
 	private SeekBar fontSizeSeekBar_;	
 	//private ToggleButton toggleButton_;	
-	private EditText textField;	
+	private static EditText textField;	
 	private SharedPreferences prefs;
 	private SharedPreferences savePrefs;
 	private Editor mEditor;
@@ -87,7 +91,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	private final String tag = "";	
 	private final String LOG_TAG = "PixelText";
 	private static int resizedFlag = 0;
-	private ConnectTimer connectTimer; 	 	
+	private ConnectTimer connectTimer; 	
+	private static ScrollingTextTimer scrollingtextTimer_;
   	private static int deviceFound = 0;
   	private boolean noSleep = false;	
 	private int countdownCounter;
@@ -108,9 +113,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
   	private static int height_original; 	  
   	private static float scaleWidth; 
   	private static float scaleHeight; 	  	
-  	private static Bitmap resizedBitmap;  	
-  
-   // private static DecodedTimer decodedtimer; 
+  	private static Bitmap resizedBitmap; 
 	private Canvas canvas;
 	private static Canvas canvasIOIO;
 	
@@ -121,22 +124,23 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	private boolean debug_;
 	private static int appAlreadyStarted = 0;
 	//private int scrollSpeedProgress = 1;
-	private int scrollSpeedValue = 1;
+	private static int scrollSpeedValue = 1;
 	private int fontSizeValue = 26;
 	
 	private ColorPicker picker;
 	private SVBar svBar;
 	private OpacityBar opacityBar;
 	private Button button;
+	private Button writeButton_;
 	private TextView text;
-	private int ColorWheel;
-	private Paint paint;
+	private static int ColorWheel;
+	private static Paint paint;
 	private Typeface tf;
-	private String scrollingText; //used for scrolling text
-	private Rect bounds;
-	private int resetX;
-	private int messageWidth;
-	private int x;	
+	private static String scrollingText; //used for scrolling text
+	private static Rect bounds;
+	private static int resetX;
+	private static int messageWidth;
+	private static int x;	
 	private int stepSize = 6;
 	private String prefFontSize;
 	private int prefColor;
@@ -148,12 +152,28 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	private Typeface selectedFont;
 	private String fontlist[];
 	private int prefFontPosition;
-	
+	public long frame_length;
+	private static int currentResolution;
+	private static String pixelFirmware = "Not Connected";
+	private static String pixelBootloader = "Not Connected";
+	private static String pixelHardwareID = "Not Connected";
+	private static String IOIOLibVersion = "Not Connected";
+	private static VersionType v;
+    private volatile static Timer timer;
+    private static Pixel pixel;
+    private RgbLedMatrix ledMatrix;
+    private static int scrollingKeyFrames_ = 1;
+	private static final int REQUEST_PAIR_DEVICE = 10;
 
     @Override
     public void onCreate(Bundle savedInstanceState) 
     {
-        super.onCreate(savedInstanceState);
+        
+    	//TO DO this app should accept text sharing from other android apps
+    	
+    	//after ioio setup, we'll call the method with the timer to scroll the text, this timer will just keep running until we stop it
+    	
+    	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
      //   scrollSpeedtextView_ = (TextView)findViewById(R.id.scrollSpeedtextView);
@@ -193,12 +213,12 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         resources = this.getResources();
         setPreferences();
         //***************************
-    
         
         picker = (ColorPicker) findViewById(R.id.picker);
 		svBar = (SVBar) findViewById(R.id.svbar);
 		opacityBar = (OpacityBar) findViewById(R.id.opacitybar);
 		button = (Button) findViewById(R.id.button1);
+		writeButton_ = (Button) findViewById(R.id.writeButton);
 		text = (TextView) findViewById(R.id.textView1);
 		
 		picker.addSVBar(svBar);
@@ -211,6 +231,14 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 			public void onClick(View v) {
 				text.setTextColor(picker.getColor());
 				picker.setOldCenterColor(picker.getColor());
+			}
+		});
+		
+		writeButton_.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				scrollTextButtonWrite(); //this method will first check if pixel was detected and if so, we'll write the text that is there
 			}
 		});
       
@@ -235,7 +263,6 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         bounds = new Rect();
         
         paint = new Paint();
-      
         
     	if (prefColor != 333333) {   //let's set the last color from prefs
     		ColorWheel = prefColor;
@@ -245,11 +272,19 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     		ColorWheel = Color.GREEN;
         	paint.setColor(ColorWheel);
     	}
-    	
-    	
-        	
-        	
         	//paint.setTypeface(tf);
+    	
+    	
+    	 // Get intent, action and MIME type
+	      Intent intent = getIntent();
+	      String action = intent.getAction();
+	      String type = intent.getType();
+
+	      if (Intent.ACTION_SEND.equals(action) && type != null) {
+	          if ("text/plain".equals(type)) {
+	              handleSendText(intent); // Handle text being sent
+	          } 
+	      }    
     	
         //**** for the font drop down list
         
@@ -277,7 +312,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	        
 	       //setFont is a function below in the code which sets the font based on the position passed
 	        setFont(index);
-	        x=64; //resetting the spacing
+	       // x=64; //resetting the spacing
+	        x=KIND.width *2 ;
 	        
 	        //let's also save the font for the next time
 	    	mEditor = prefs.edit();
@@ -349,7 +385,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	            		mEditor.putString("fontKey", String.valueOf(rawProgress));
 	            		mEditor.commit();
 	            	    //showToast("font size: " + String.valueOf(fontSizeValue));
-	            		x=64;
+	            		//x=64;
+	            		x=KIND.width *2 ;
 		            }
 	            	
 	            	
@@ -366,6 +403,14 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 
         	}
     };
+    
+    @SuppressLint("ParserError")
+	private void handleSendText(Intent intent) {  //not used
+	    String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+	    if (sharedText != null) {
+	    	textField.setText(sharedText);
+	    }
+    }
     
     public void onColorChanged(int color) {
     	ColorWheel = color;
@@ -473,7 +518,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     	  paint.setTypeface(selectedFont);
     }
     
-    private  void showToast(final String msg) {
+    private void showToast(final String msg) {
 	 		runOnUiThread(new Runnable() {
 	 			@Override
 	 			public void run() {
@@ -501,10 +546,30 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
  	      	alert.setTitle(getResources().getString(R.string.setupInstructionsStringTitle)).setIcon(R.drawable.icon).setMessage(getResources().getString(R.string.setupInstructionsString)).setNeutralButton(getResources().getString(R.string.OKText), null).show();
  	   }
     	
-	  if (item.getItemId() == R.id.menu_about) {
+	  
+      if (item.getItemId() == R.id.menu_btPair)
+      {
+			
+		if (pixelHardwareID.substring(0,4).equals("MINT")) { //then it's a PIXEL V1 unit
+			showToast("Bluetooth Pair to PIXEL using code: 4545");
+		}
+		else { //we have a PIXEL V2 unit
+			showToast("Bluetooth Pair to PIXEL using code: 0000");
+		}
+		
+	  Intent intent = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
+      startActivityForResult(intent, REQUEST_PAIR_DEVICE);
+       
+      }
+      
+      if (item.getItemId() == R.id.menu_about) {
 		  
 		    AlertDialog.Builder alert=new AlertDialog.Builder(this);
-	      	alert.setTitle(getString(R.string.menu_about_title)).setIcon(R.drawable.icon).setMessage(getString(R.string.menu_about_summary) + "\n\n" + getString(R.string.versionString) + " " + app_ver).setNeutralButton(getResources().getString(R.string.OKText), null).show();	
+	      	alert.setTitle(getString(R.string.menu_about_title)).setIcon(R.drawable.icon).setMessage(getString(R.string.menu_about_summary) + "\n\n" + getString(R.string.versionString) + " " + app_ver + "\n"
+	      			+ getString(R.string.FirmwareVersionString) + " " + pixelFirmware + "\n"
+	      			+ getString(R.string.HardwareVersionString) + " " + pixelHardwareID + "\n"
+	      			+ getString(R.string.BootloaderVersionString) + " " + pixelBootloader + "\n"
+	      			+ getString(R.string.LibraryVersionString) + " " + IOIOLibVersion).setNeutralButton(getResources().getString(R.string.OKText), null).show();	
 	   }
     	
     	if (item.getItemId() == R.id.menu_prefs)
@@ -533,10 +598,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     
     private void setPreferences() //here is where we read the shared preferences into variables
     {
-     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);     
-    
-     //scanAllPics = prefs.getBoolean("pref_scanAll", false);
-     //slideShowMode = prefs.getBoolean("pref_slideshowMode", false);
+     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);   
+     
      noSleep = prefs.getBoolean("pref_noSleep", false);
      debug_ = prefs.getBoolean("pref_debugMode", false);
      
@@ -544,7 +607,11 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
  	   //     resources.getString(R.string.selected_scrollSpeed),
  	    //    resources.getString(R.string.scrollSpeed_default_value))); 
      
-          
+     scrollingKeyFrames_ = Integer.valueOf(prefs.getString(   //how smooth the scrolling, essentially the keyframes
+ 	        resources.getString(R.string.scrollingKeyFrames),
+ 	        resources.getString(R.string.scrollingKeyFramesDefault))); 
+     
+     
      matrix_model = Integer.valueOf(prefs.getString(   //the selected RGB LED Matrix Type
     	        resources.getString(R.string.selected_matrix),
     	        resources.getString(R.string.matrix_default_value))); 
@@ -553,23 +620,76 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
      case 0:
     	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x16;
     	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage16);
+    	 frame_length = 1024;
+    	 currentResolution = 16;
     	 break;
      case 1:
     	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x16;
     	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage16);
+    	 frame_length = 1024;
+    	 currentResolution = 16;
     	 break;
      case 2:
     	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32_NEW; //v1
     	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+    	 frame_length = 2048;
+    	 currentResolution = 32;
     	 break;
      case 3:
     	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2
     	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+    	 frame_length = 2048;
+    	 currentResolution = 32;
     	 break;
+     case 4:
+    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x32; 
+    	 BitmapInputStream = getResources().openRawResource(R.raw.select64by32);
+    	 frame_length = 8192;
+    	 currentResolution = 64; 
+    	 break;
+     case 5:
+    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x64; 
+    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by64);
+    	 frame_length = 8192;
+    	 currentResolution = 64; 
+    	 break;	 
+     case 6:
+    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_2_MIRRORED; 
+    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by64);
+    	 frame_length = 8192;
+    	 currentResolution = 64; 
+    	 break;	 	 
+     case 7:
+    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_4_MIRRORED;
+    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by128);
+    	 frame_length = 8192;
+    	 currentResolution = 128; 
+     case 8:
+    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_128x32; //horizontal
+    	 BitmapInputStream = getResources().openRawResource(R.raw.select128by32);
+    	 frame_length = 8192;
+    	 currentResolution = 128;  
+    	 break;	 
+     case 9:
+    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x128; //vertical mount
+    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by128);
+    	 frame_length = 8192;
+    	 currentResolution = 128; 
+    	 break;	 
+     case 10:
+    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x64;
+    	 BitmapInputStream = getResources().openRawResource(R.raw.select64by64);
+    	 frame_length = 8192;
+    	 currentResolution = 128; 
+    	 break;	 	 		 
      default:	    		 
     	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2 as the default
     	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+    	 frame_length = 2048;
+    	 currentResolution = 32;
      }
+     
+     //matrix_number = matrix_model;
          
      frame_ = new short [KIND.width * KIND.height];
 	 BitmapBytes = new byte[KIND.width * KIND.height *2]; //512 * 2 = 1024 or 1024 * 2 = 2048
@@ -577,7 +697,289 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	 loadRGB565(); //this function loads a raw RGB565 image to the matrix
  }
     
-	private static void loadRGB565() {
+    private  void scrollTextButtonWrite() { //this gets called if the user hit the write button
+    	
+    	if (deviceFound == 1) {
+    		scrollText(true);
+    	}
+    	else {
+    		showToast("PIXEL was not found, did you Bluetooth pair to PIXEL?");
+    	}
+    }
+    
+	private void scrollText(boolean writeMode) 
+	 
+	    {
+		   if(scrollingtextTimer_ != null)
+			   scrollingtextTimer_.cancel();
+		
+		 // stopExistingTimer(); //
+			
+			if (pixelHardwareID.substring(0,4).equals("PIXL") && writeMode == true) {  //in write mode, we don't need a timer because we don't need a delay in between frames, we will first put PIXEL in write mode and then send all frames at once
+					pixel.interactiveMode();
+					float textFPS = 1000.f / scrollSpeedValue;  //TO DO need to do the math so the scrollig speed is right, need to change this formula
+					pixel.writeMode(textFPS); //need to tell PIXEL the frames per second to use, how fast to play the animations
+					showToast("Writing message, PIXEL will go blank until writing is done...");
+					System.out.println("Now writing to PIXEL's SD card, the screen will go blank until writing has been completed..."); 
+					System.out.println("Sorry, writing scrolling text is not yet supported..."); 
+					/*  int y;
+				    	 
+				   	  //for (y=0;y<numFrames-1;y++) { //let's loop through and send frame to PIXEL with no delay
+				      for (y=0;y<GIFnumFrames;y++) { //Al removed the -1, make sure to test that!!!!!
+				 		
+				 			//framestring = "animations/decoded/" + animation_name + ".rgb565";
+				 			//System.out.println("Writing to PIXEL: Frame " + y + "of " + GIFnumFrames + " Total Frames");
+
+			    			System.out.println("Writing " + gifFileName_ + " to PIXEL " + "frame " + y);
+				 		    pixel.SendPixelDecodedFrame(currentDir, gifFileName_, y, GIFnumFrames, GIFresolution, KIND.width,KIND.height);
+				   	  } //end for loop
+*/					//pixel.playLocalMode(); //now tell PIXEL to play locally
+					//System.out.println("Writing " + gifFileName_ + " to PIXEL complete, now displaying...");
+					
+					
+					paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
+  	                scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
+  	            	paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
+					
+					messageWidth = bounds.width();        
+	      	        System.out.println("message width in write mode" + " " + messageWidth);
+	      	        resetX = 0 - messageWidth;
+					
+					while (x <= resetX) {
+					
+						try 
+	      	            {	            	
+	      	            	
+	      	            	//paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
+	      	                //scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
+	      	            	//paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
+	      	                pixel.writeMessageToPixel(x, scrollingText, paint); //let's write the text
+	      	                
+	      	            } 
+	      	            catch (ConnectionLostException ex) 
+	      	            {
+	      	               // Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+	      	            }
+						
+						 x = x - scrollingKeyFrames_ ;  //controls the smoothness / number of keyframes
+	      	                        
+	      	           /* messageWidth = bounds.width();        
+	      	           // System.out.println("message width" + " " + messageWidth);
+	      	            
+	      	            resetX = 0 - messageWidth;
+	      	            
+	      	            if(x == resetX)
+	      	            {
+	      	               // x = 64; //was this when hard coded for 32x32
+	      	                x = KIND.width *2;
+	      	            }
+	      	            else
+	      	            {
+	      	                //x--;
+	      	                x = x - scrollingKeyFrames_ ;  //let's add a new pref here
+	      	            }*/
+				}
+					
+					pixel.playLocalMode(); //we're done writing the message so now tell PIXEL to play locally	
+					
+			}
+			else {   //we're not writing so let's just stream
+		 
+				
+	         //   stopExistingTimer(); //is this needed, probably no
+	    				   
+	    				 //  ActionListener ScrollingTextTimer = new ActionListener() {
+
+	    	               //     public void actionPerformed(ActionEvent actionEvent) {
+				if(scrollingtextTimer_ != null)
+					   scrollingtextTimer_.cancel();
+						 		
+		 		scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);
+		 		scrollingtextTimer_.start();
+	    	                    
+	    	                    	
+                /*	 try 
+     	            {	            	
+     	            	
+     	            	paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
+     	                scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
+     	            	paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
+     	                pixel.writeImagetoMatrix(x, scrollingText, paint); //let's write the text
+     	                
+     	            } 
+     	            catch (ConnectionLostException ex) 
+     	            {
+     	               
+     	            }
+     	            
+     	            try 
+     	            {
+     					
+     	            	Thread.sleep(90 - (scrollSpeedValue*10));  //the max is 90
+     				} 
+     	            catch (InterruptedException e) 
+     				{
+     					//System.out.println("coudl not sleep in " + getClass().getName() );
+     				}
+     	                        
+     	            messageWidth = bounds.width();        
+     	           // System.out.println("message width" + " " + messageWidth);
+     	            
+     	            resetX = 0 - messageWidth;
+     	            
+     	            if(x == resetX)
+     	            {
+     	               // x = 64; //was this when hard coded for 32x32
+     	                x = KIND.width *2;
+     	            }
+     	            else
+     	            {
+     	                //x--;
+     	                x = x - scrollingKeyFrames_ ;  //let's add a new pref here
+     	            }
+	    	         	         //   System.out.println("resetX: " + resetX);
+	    	         	        //    System.out.println("x: " + x);
+	    	                    	
+	    	                    	
+	    	                    	//delay = 5;	
+	    	                    	//scrollingTextDelay_ = 710 - scrollingTextDelay_;                            // al linke: added this so the higher slider value means faster scrolling
+	    	                   	    
+	    	                   	  //  ScrollingTextPanel.this.timer.setDelay(delay);
+	    	                    	
+	    	                    	
+	    	                   	    
+	    	                               int w = 64 * KIND.width/32;  //originally this was w = 64 and h = 64 hard coded for the 32x32 matrix
+	    	                               int h = 64 *  KIND.height/32;
+	    	                    	
+	    	                    			int w = KIND.width * 2;
+	    	                    			int h = KIND.height* 2;
+	    	                   	    
+	    	                               BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+	    	                               
+	    	                               //let's set the text color
+	    	                               if (scrollingTextColor_.equals("red")) {
+	    	                            	   textColor = Color.RED;
+	    	                               }
+	    	                               else if (scrollingTextColor_.equals("green")) {
+	    	                            	   textColor = Color.GREEN;
+	    	                               }
+	    	                               else if (scrollingTextColor_.equals("blue")) {
+	    	                            	   textColor = Color.BLUE;
+	    	                               }
+	    	                               else if (scrollingTextColor_.equals("cyan")) {
+	    	                            	   textColor = Color.CYAN;
+	    	                               }
+	    	                               else if (scrollingTextColor_.equals("gray")) {
+	    	                            	   textColor = Color.GRAY;
+	    	                               }
+	    	                               else if (scrollingTextColor_.equals("magenta") || scrollingTextColor_.equals("purple")) {
+	    	                            	   textColor = Color.MAGENTA;
+	    	                               }
+	    	                               else if (scrollingTextColor_.equals("orange")) {
+	    	                            	   textColor = Color.ORANGE;
+	    	                               }
+	    	                               else if (scrollingTextColor_.equals("pink")) {
+	    	                            	   textColor = Color.PINK;
+	    	                               }
+	    	                               else if (scrollingTextColor_.equals("yellow")) {
+	    	                            	   textColor = Color.YELLOW;
+	    	                               }
+	    	                               
+	    	                              // Color textColor = colorPanel.getBackground();
+	    	                               //Color myColor = new Color (246, 27, 27)
+	    	                   	    
+	    	                               Graphics2D g2d = img.createGraphics();
+	    	                               g2d.setPaint(textColor);
+	    	                               
+	    	                              // Font tr = new Font("TimesRoman", Font.PLAIN, scrollingTextFontSize_);
+	    	                               Font tr = new Font("Arial", Font.PLAIN, scrollingTextFontSize_);
+	    	                              // Font trb = new Font("TimesRoman", Font.BOLD, scrollingTextFontSize_);
+	    	                              // Font tri = new Font("TimesRoman", Font.ITALIC, scrollingTextFontSize_);
+	    	                               
+	    	                               //String fontFamily = fontFamilyChooser.getSelectedItem().toString();
+	    	                               
+	    	                               Font font = fonts.get(fontFamily);
+	    	                               if(font == null)
+	    	                               {
+	    	                                   font = new Font(fontFamily, Font.PLAIN, 32);
+	    	                                   fonts.put(fontFamily, font);
+	    	                               }            
+	    	                               
+	    	                               g2d.setFont(tr);
+	    	                               
+	    	                              String message = scrollingText;
+	    	                               //String message = "hard code test";
+	    	                               
+	    	                               FontMetrics fm = g2d.getFontMetrics();
+	    	                               
+	    	                               int y = fm.getHeight();   //30 = 30 * 16/32 = 15  
+	    	                               y = y * KIND.height/32;
+	    	                              // System.out.println("font height: " + y);
+
+	    	                               try 
+	    	                               {
+	    	                                   additionalBackgroundDrawing(g2d);
+	    	                               } 
+	    	                               catch (Exception ex) 
+	    	                               {
+	    	                                  // Logger.getLogger(ScrollingTextPanel.class.getName()).log(Level.SEVERE, null, ex);
+	    	                               }
+	    	                               
+	    	                               g2d.drawString(message, x, y);
+	    	                               
+	    	                               try 
+	    	                               {
+	    	                                   additionalForegroundDrawing(g2d);
+	    	                               } 
+	    	                               catch (Exception ex) 
+	    	                               {
+	    	                                   //Logger.getLogger(ScrollingTextPanel.class.getName()).log(Level.SEVERE, null, ex);
+	    	                               }
+	    	                               
+	    	                               g2d.dispose();
+
+	    	                               if(pixel != null)
+	    	                               {
+	    	                                   try 
+	    	                                   {  
+	    	                                       pixel.writeImagetoMatrix(img,KIND.width,KIND.height);
+	    	                                   } 
+	    	                                   catch (ConnectionLostException ex) 
+	    	                                   {
+	    	                                       //Logger.getLogger(ScrollingTextPanel.class.getName()).log(Level.SEVERE, null, ex);
+	    	                                   }                
+	    	                               }
+	    	                                           
+	    	                               int messageWidth = fm.stringWidth(message);            
+	    	                               int resetX = 0 - messageWidth;
+	    	                               
+	    	                               if(x == resetX)
+	    	                               {
+	    	                                   x = w;
+	    	                               }
+	    	                               else
+	    	                               {
+	    	                                   x--;
+	    	                               }
+	                    }
+	                };
+	    				   
+	    				   
+	    				   timer = new Timer(scrollSpeedValue, ScrollingTextTimer); //the timer calls this function per the interval of fps
+	    				   timer.start();*/
+	    	}    
+	    }
+    
+	  /* private static void stopExistingTimer()
+	    {
+	        if(timer != null && timer.isRunning() )
+	        {
+	            //System.out.println("Stoping PIXEL activity in " + getClass().getSimpleName() + ".");
+	            timer.stop();
+	        }        
+	    }*/
+	 
+	 private static void loadRGB565() {
 	 	   
 		try {
    			int n = BitmapInputStream.read(BitmapBytes, 0, BitmapBytes.length); // reads
@@ -603,27 +1005,40 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	
 	class Looper extends BaseIOIOLooper 
 	{		
-		private RgbLedMatrix ledMatrix;
+		//private RgbLedMatrix ledMatrix;
 		
-		private Pixel pixel;
+		//private Pixel pixel;
 
 		@Override
 		public void setup() throws ConnectionLostException 
 		{
 			try 
 			{
-				RgbLedMatrix.Matrix type = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32;
-				ledMatrix = ioio_.openRgbLedMatrix(type);
+				
+				pixelHardwareID = ioio_.getImplVersion(v.HARDWARE_VER); 
+				//RgbLedMatrix.Matrix type = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32;  //took this out because we set the LED matrix type from prefs
+				//ledMatrix = ioio_.openRgbLedMatrix(type);
 				deviceFound = 1; //set this flag so the pop up doesn't come
 //				Toast toast = Toast.makeText(getApplicationContext() , "matrix obtained", Toast.LENGTH_SHORT);
 //				toast.show();
 				
-				pixel = new Pixel(ledMatrix, type);
+				//**** let's get IOIO version info for the About Screen ****
+	  			pixelFirmware = ioio_.getImplVersion(v.APP_FIRMWARE_VER);
+	  			pixelBootloader = ioio_.getImplVersion(v.BOOTLOADER_VER);
+	  			pixelHardwareID = ioio_.getImplVersion(v.HARDWARE_VER); 
+	  			IOIOLibVersion = ioio_.getImplVersion(v.IOIOLIB_VER);
+	  			//**********************************************************
+				
+				if (!pixelHardwareID.substring(0,4).equals("PIXL"))  //don't show the write button if it's not a PIXEL V2 board
+					writeButton_.setVisibility(View.GONE); 
+				
+				//pixel = new Pixel(ledMatrix, type);
 				
 //				toast.setText("PIXEL obtained.");
 				System.out.println("PIXEL obtained");
 				
 				enableUi(true);
+				scrollText(false); //start scrolling text, false means we stream and not write. User can write if they press write button
 			} 
 			catch (ConnectionLostException e) 
 			{
@@ -632,7 +1047,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 			}
 		}
 		
-		@Override
+		// we can't have this in the loop as we need to go faster, the loop maxes out at 30 fps
+		/*@Override
 		public void loop() throws ConnectionLostException 
 		{ 
 			{
@@ -682,7 +1098,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	            
 	            
 			}	
-		}
+		}*/
 	}
 
 	@Override
@@ -698,7 +1114,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 			public void run() 
 			{
 				scrollSpeedSeekBar_.setEnabled(enable);
-				//toggleButton_.setEnabled(enable);
+				writeButton_.setEnabled(enable);
 			}
 		});
 	}
@@ -725,6 +1141,53 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
  			//not used
  		}
  	}
+	 
+	 public class ScrollingTextTimer extends CountDownTimer
+	 	{
+
+	 		public ScrollingTextTimer(long startTime, long interval)
+	 			{
+	 				super(startTime, interval); 
+	 				
+	 			}
+
+	 		@Override
+	 		public void onFinish()
+	 			{
+	 			scrollingtextTimer_.start(); //restart the timer to keep is going
+	 				
+	 			}
+
+	 		@Override
+	 		public void onTick(long millisUntilFinished)				{
+	 			try 
+ 	            {	            	
+ 	            	
+ 	            	paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
+ 	                scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
+ 	            	paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
+ 	                pixel.writeMessageToPixel(x, scrollingText, paint); //let's write the text
+ 	                
+ 	            } 
+ 	            catch (ConnectionLostException ex) 
+ 	            {
+ 	               // Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+ 	            }
+ 	                        
+ 	            messageWidth = bounds.width(); 
+ 	            
+ 	            resetX = 0 - messageWidth;
+ 	            
+ 	            if(x == resetX)
+ 	            {
+ 	                x = KIND.width *2;
+ 	            }
+ 	            else
+ 	            {
+ 	                x = x - scrollingKeyFrames_ ;  //let's add a new pref here
+ 	            }
+	 		}
+	 	}
   
   private void showNotFound() {	
 		AlertDialog.Builder alert=new AlertDialog.Builder(this);

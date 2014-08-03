@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/com.larswerkman.demo.colorpicker"
+    xmlns:app="http://schemas.android.com/apk/res/com.larswerkman.demo.holocolorpicker"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
@@ -65,23 +65,27 @@
 	    android:prompt="@string/fontSpinner_title" />
 
 	</LinearLayout>
-
+
+	<Button
+	    android:id="@+id/writeButton"
+	    android:layout_width="151dp"
+	    android:layout_height="wrap_content"
+	    android:text="Write" />
 	
-	
-	  <com.larswerkman.colorpicker.ColorPicker
+	  <com.larswerkman.holocolorpicker.ColorPicker
         android:id="@+id/picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
  
-    <com.larswerkman.colorpicker.SVBar
+    <com.larswerkman.holocolorpicker.SVBar
         android:id="@+id/svbar"
         android:layout_width="322dp"
         android:layout_height="112dp"
         android:layout_gravity="center"
         android:layout_margin="8dip"/>
  
-    <com.larswerkman.colorpicker.OpacityBar
+    <com.larswerkman.holocolorpicker.OpacityBar
         android:id="@+id/opacitybar"
         android:layout_width="322dp"
         android:layout_height="112dp"

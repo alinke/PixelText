@@ -1,19 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
+    
+<string-array name="scrollingKeyFramesEntries">
+    <item>Most Smooth</item>
+    <item>Smoother</item>
+    <item>Medium</item>
+    <item>Less Smooth</item>
+    <item>Least Smooth</item>
+</string-array>
+
+<string-array name="scrollingKeyFramesValues">
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+</string-array>
 	
-	<string-array name="matrix_options">
-    <item>PIXEL 16x32 V1</item>
-    <item>Adafruit 16x32</item>
-    <item>PIXEL 32x32 V1</item>
-    <item>PIXEL 32x32 V2</item>
-	</string-array>
+<string-array name="matrix_options">
+    <item>Seeed 32x16</item>
+    <item>Adafruit 32x16</item>
+    <item>Seeed 32x32</item>
+    <item>PIXEL 32x32 (DEFAULT)</item>
+    <item>64x32 (2x1 horz)</item>
+    <item>32x64 (1x2 vert)</item>
+    <item>Mirrored (2 displays)</item>
+    <item>Mirrored (4 displays)</item>
+    <item>128x32 (4x1 horz)</item>
+    <item>32x128 (1x4 vert)</item>
+    <item>SUPER PIXEL 64x64 (2x2 square)</item>
+</string-array>
 	
 <string-array name="matrix_values">
     <item>0</item>
     <item>1</item>
     <item>2</item>
     <item>3</item>
+    <item>4</item>
+    <item>5</item>
+    <item>6</item>
+    <item>7</item>
+    <item>8</item>
+    <item>9</item>
+    <item>10</item>
 </string-array>
 
 <string-array name="scrollSpeed_options">
