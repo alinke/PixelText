@@ -358,7 +358,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:bar_length
+          @attr name com.ledpixelart.pixel.scrolling.text.android:bar_length
         */
         public static final int ColorBars_bar_length = 1;
         /**
@@ -372,7 +372,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:bar_orientation_horizontal
+          @attr name com.ledpixelart.pixel.scrolling.text.android:bar_orientation_horizontal
         */
         public static final int ColorBars_bar_orientation_horizontal = 4;
         /**
@@ -388,7 +388,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:bar_pointer_halo_radius
+          @attr name com.ledpixelart.pixel.scrolling.text.android:bar_pointer_halo_radius
         */
         public static final int ColorBars_bar_pointer_halo_radius = 3;
         /**
@@ -404,7 +404,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:bar_pointer_radius
+          @attr name com.ledpixelart.pixel.scrolling.text.android:bar_pointer_radius
         */
         public static final int ColorBars_bar_pointer_radius = 2;
         /**
@@ -420,7 +420,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:bar_thickness
+          @attr name com.ledpixelart.pixel.scrolling.text.android:bar_thickness
         */
         public static final int ColorBars_bar_thickness = 0;
         /** Attributes that can be used with a ColorPicker.
@@ -460,7 +460,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:color_center_halo_radius
+          @attr name com.ledpixelart.pixel.scrolling.text.android:color_center_halo_radius
         */
         public static final int ColorPicker_color_center_halo_radius = 3;
         /**
@@ -476,7 +476,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:color_center_radius
+          @attr name com.ledpixelart.pixel.scrolling.text.android:color_center_radius
         */
         public static final int ColorPicker_color_center_radius = 2;
         /**
@@ -492,7 +492,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:color_pointer_halo_radius
+          @attr name com.ledpixelart.pixel.scrolling.text.android:color_pointer_halo_radius
         */
         public static final int ColorPicker_color_pointer_halo_radius = 5;
         /**
@@ -508,7 +508,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:color_pointer_radius
+          @attr name com.ledpixelart.pixel.scrolling.text.android:color_pointer_radius
         */
         public static final int ColorPicker_color_pointer_radius = 4;
         /**
@@ -524,7 +524,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:color_wheel_radius
+          @attr name com.ledpixelart.pixel.scrolling.text.android:color_wheel_radius
         */
         public static final int ColorPicker_color_wheel_radius = 0;
         /**
@@ -540,7 +540,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:color_wheel_thickness
+          @attr name com.ledpixelart.pixel.scrolling.text.android:color_wheel_thickness
         */
         public static final int ColorPicker_color_wheel_thickness = 1;
     };

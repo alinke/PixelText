@@ -602,7 +602,7 @@ public int getDecodedresolution(String decodedGIFPathTXT) {  //need to return th
       }    
         
         
-    public void writeMessageToPixel(float x, String text, Paint paint) throws ConnectionLostException 
+    public void writeMessageToPixel(float x, String text, Paint paint, int y) throws ConnectionLostException 
     {  
     	//here we'll take a PNG, BMP, or whatever and convert it to RGB565 via a canvas, also we'll re-size the image if necessary
     	
@@ -610,8 +610,14 @@ public int getDecodedresolution(String decodedGIFPathTXT) {  //need to return th
     	originalImage = Bitmap.createBitmap( KIND.width * 2,  KIND.height* 2, Bitmap.Config.RGB_565);  //let's create the image we need
     	Canvas canvas = new Canvas(originalImage);  
     	
-    	float y = 45; //this controls the centering of the scrolling text, was originally 25 but this put the text too high 	  
-    	y = y * KIND.height/32; //TO DO not sure check this later if this is rigth
+    	//float y = 50;
+    	
+    	
+    	//y += (Math.abs(r.height()))/2;
+    	//float y = (KIND.height - 32) + 25; //this controls the centering of the scrolling text, was originally 25 but this put the text too high 	  
+    	//y = y * KIND.height/32; //TO DO not sure check this later if this is rigth
+    	
+    	//int paintheight = paint.
     	
     	canvas.drawText(text, x, y, paint);
 	    canvasBitmap = Bitmap.createBitmap(KIND.width, KIND.height, Config.RGB_565); 

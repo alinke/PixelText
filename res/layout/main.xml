@@ -18,7 +18,7 @@
 	    android:layout_height="wrap_content" 
 	    android:text="@string/seekbar_label"
 	    />
-	
+
 	<SeekBar
 		android:id="@+id/SeekBar"
 		android:layout_height="wrap_content"
@@ -26,13 +26,13 @@
 		android:max="10"
 		android:progress="1"
 		/>
-	
+
 	<TextView  
 	    android:layout_width="fill_parent" 
 	    android:layout_height="wrap_content" 
 	    android:text="Font Size:"
 	    />
-	
+
 	<SeekBar
 		android:id="@+id/FontSeekBar"
 		android:layout_height="wrap_content"
@@ -55,8 +55,8 @@
 		    android:text="Font:"
 		    android:textAppearance="?android:attr/textAppearanceSmall" />
 
-		
-		
+
+
 		<Spinner
 	    android:id="@+id/fontSpinner"
 	    android:layout_width="match_parent"
@@ -65,13 +65,14 @@
 	    android:prompt="@string/fontSpinner_title" />
 
 	</LinearLayout>
-
+
+
 	<Button
 	    android:id="@+id/writeButton"
 	    android:layout_width="151dp"
 	    android:layout_height="wrap_content"
 	    android:text="Write" />
-	
+
 	  <com.larswerkman.holocolorpicker.ColorPicker
         android:id="@+id/picker"
         android:layout_width="wrap_content"
@@ -116,5 +117,5 @@
     </LinearLayout>
 
 
-	
+
 </LinearLayout>
