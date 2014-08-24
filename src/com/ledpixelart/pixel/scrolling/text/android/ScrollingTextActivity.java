@@ -58,6 +58,8 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -130,7 +132,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	private boolean debug_;
 	private static int appAlreadyStarted = 0;
 	//private int scrollSpeedProgress = 1;
-	private static int scrollSpeedValue = 50;
+	private static int scrollSpeedValue = 100;
 	private int fontSizeValue = 26;
 	
 	private ColorPicker picker;
@@ -139,6 +141,14 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	private Button button;
 	private Button writeButton_;
 	private TextView text;
+	private RadioButton speedRadio1;
+	private RadioButton speedRadio2;
+	private RadioButton speedRadio3;
+	private RadioButton speedRadio4;
+	private RadioGroup speedRadioGroup_;
+	private SeekBar VerticalPositionSeekBar;
+	private Spinner fontSpinner;
+	
 	private static int ColorWheel;
 	private static Paint paint;
 	private Typeface tf;
@@ -150,10 +160,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	private int stepSize = 6;
 	private String prefFontSize;
 	private int prefColor;
-	private String prefScrollSpeed;
 	private String prefScrollingText;
-	
-	private Spinner fontSpinner;
 	
 	private Typeface selectedFont;
 	private String fontlist[];
@@ -173,6 +180,10 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	private  ProgressDialog progress;
 	private int yCenter;  //TO DO this center doesn't work all the time, add a way for the user to override up or down
 	private static final int WENT_TO_PREFERENCES = 1;
+	private int prefYoffset_;
+	private int yOffset = 0;
+	private String prefScrollSpeed_;
+	private int fontSizeStepper = 8;
 
     @Override
     public void onCreate(Bundle savedInstanceState) 
@@ -184,31 +195,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     	
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-     //   scrollSpeedtextView_ = (TextView)findViewById(R.id.scrollSpeedtextView);
-        scrollSpeedSeekBar_ = (SeekBar)findViewById(R.id.SeekBar);
-        scrollSpeedSeekBar_.setOnSeekBarChangeListener(OnSeekBarProgress);
-        //set the maximum of seekbars as 100%
-        scrollSpeedSeekBar_.setMax(10);
         
-        fontSizeSeekBar_ = (SeekBar)findViewById(R.id.FontSeekBar);
-        fontSizeSeekBar_.setOnSeekBarChangeListener(OnSeekBarProgress);
-        
-        //toggleButton_ = (ToggleButton)findViewById(R.id.ToggleButton);  //not used
-        
-        textField = (EditText) findViewById(R.id.textField);  //the scrolling text
-        this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        
-    	prefs = getSharedPreferences("appSave", MODE_PRIVATE);
-        prefFontSize = prefs.getString("fontKey", "14");
-        prefScrollSpeed = prefs.getString("scrollSpeedKey", "8");
-        prefScrollingText = prefs.getString("scrollingTextKey","TYPE TEXT HERE");
-        prefColor = prefs.getInt("colorKey", 333333);
-        prefFontPosition = prefs.getInt("fontPositionKey", 0);
-       // showToast("font size: " + prefColor);
-        
-        textField.setText(prefScrollingText);
-        
+       
         try
 	        {
 	            app_ver = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
@@ -223,6 +211,23 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         setPreferences();
         //***************************
         
+        textField = (EditText) findViewById(R.id.textField);  //the scrolling text
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        
+    	prefs = getSharedPreferences("appSave", MODE_PRIVATE);
+        prefFontSize = prefs.getString("fontKey", "14");
+       // prefYoffset_ = prefs.getInt("prefYoffset", KIND.height/2); //default to in the middle
+        
+        prefYoffset_ = prefs.getInt("prefYoffset", KIND.height/2); //default to in the middle
+        yOffset = prefYoffset_ - KIND.height/2; //16 - 32/2 = 0 or 20 - 16 = 4
+        
+        prefScrollSpeed_ = prefs.getString("prefScrollSpeed", "1");
+        prefScrollingText = prefs.getString("scrollingTextKey","TYPE TEXT HERE");
+        prefColor = prefs.getInt("colorKey", 333333);
+        prefFontPosition = prefs.getInt("fontPositionKey", 0);
+        
+        textField.setText(prefScrollingText);
+        
         picker = (ColorPicker) findViewById(R.id.picker);
 		svBar = (SVBar) findViewById(R.id.svbar);
 		opacityBar = (OpacityBar) findViewById(R.id.opacitybar);
@@ -233,6 +238,12 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 		picker.addSVBar(svBar);
 		picker.addOpacityBar(opacityBar);
 		picker.setOnColorChangedListener(this);
+		
+		VerticalPositionSeekBar = (SeekBar)findViewById(R.id.VerticalBar);
+	    VerticalPositionSeekBar.setMax(KIND.height); //maximum for y offset is 32 for pixel and 64 for super pixel 
+	    VerticalPositionSeekBar.setProgress(prefYoffset_); //start in the middle
+	    
+	    VerticalPositionSeekBar.setOnSeekBarChangeListener(OnSeekBarProgress);
 		
 		button.setOnClickListener(new OnClickListener() {
 			
@@ -251,14 +262,19 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 			}
 		});
       
-       // scrollSpeedSeekBar_.setProgress(scrollSpeed);
-        scrollSpeedSeekBar_.setProgress(Integer.parseInt(prefScrollSpeed.toString()));     
-       // scrollSpeedValue = scrollSpeed;
-        scrollSpeedValue = Integer.parseInt(prefScrollSpeed.toString()) * 10;
-        //scrollSpeedValue = (11 - scrollSpeedValue) * 10; //TO DO this is causing a still scroll/locked up app, fix this later
-        fontSizeSeekBar_.setProgress(Integer.parseInt(prefFontSize.toString()));
+	    //   scrollSpeedtextView_ = (TextView)findViewById(R.id.scrollSpeedtextView);
+        scrollSpeedSeekBar_ = (SeekBar)findViewById(R.id.SeekBar);
+        scrollSpeedSeekBar_.setOnSeekBarChangeListener(OnSeekBarProgress);
+        scrollSpeedSeekBar_.setMax(10);
+        scrollSpeedSeekBar_.setProgress(Integer.parseInt(prefScrollSpeed_.toString()));  
+		scrollingKeyFrames_ = Integer.parseInt(prefScrollSpeed_.toString()) + 1; //have to add the one because we can't have 0 which is the minimum scroll value
         
-       // prefFontSize
+		System.out.println("scrolling frames: " +scrollingKeyFrames_ );
+		
+        fontSizeSeekBar_ = (SeekBar)findViewById(R.id.FontSeekBar);
+        fontSizeSeekBar_.setOnSeekBarChangeListener(OnSeekBarProgress);
+        fontSizeSeekBar_.setMax(96);
+        fontSizeSeekBar_.setProgress(Integer.parseInt(prefFontSize));
         
         if (noSleep == true) {        	      	
         	this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); //disables sleep mode
@@ -316,8 +332,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 
 	    {
 	
-        	if (deviceFound == 1) pixel.interactiveMode(); //need to add this as we could have been playing in local mode from writing to the local SD card
-        	
+        	if (deviceFound == 1 && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode(); //need to add this as we could have been playing in local mode from writing to the local SD card
         	
         	int index = arg0.getSelectedItemPosition();
 	
@@ -326,10 +341,6 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	        
 	       //setFont is a function below in the code which sets the font based on the position passed
 	        setFont(index);
-	       // x=64; //resetting the spacing
-	        //x=KIND.width *2 ;
-	        
-	        //TO DO scrolling y vertical is wrong after the font has changed
 	        
 	        if(scrollingtextTimer_ != null) {
        		 	resetScrolling();
@@ -354,19 +365,15 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         setFont(prefFontPosition);
         //we have the default font set so let's also set the spinner position so the user knows
         fontSpinner.setSelection(prefFontPosition);
-   
-    	
     	int prefFontSizeNum = Integer.parseInt(prefFontSize.toString());
-        prefFontSizeNum = ((int)Math.round(prefFontSizeNum/stepSize))*stepSize + 16;
+        prefFontSizeNum = ((int)Math.round(prefFontSizeNum/stepSize))*stepSize + fontSizeStepper;
 		paint.setTextSize(prefFontSizeNum);
-    	paint.setFlags(Paint.ANTI_ALIAS_FLAG);
-    	
-    	
+    	//paint.setFlags(Paint.ANTI_ALIAS_FLAG);  //important to remove this , we don't want anti-aliasing for pixel art
+		
     	textField.addTextChangedListener(new TextWatcher(){  //had to add this , without it the text will disappear sometimes when charcters are removed, x becomes higher than the message length
             public void afterTextChanged(Editable s) {
             	
-            	//x = 64;
-            	if (deviceFound == 1) pixel.interactiveMode(); //need to add this as we could have been playing in local mode from writing to the local SD card
+            	if (deviceFound == 1 && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode(); //need to add this as we could have been playing in local mode from writing to the local SD card
             	//now let's save the user's entered scrolling text so the next time the app comes up, they don't have to re-type
             	
             	if(scrollingtextTimer_ != null) {
@@ -394,37 +401,29 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	            if(touch){
 	        	
 	            	if(s == scrollSpeedSeekBar_){
-	            		
-	            		if (progress < 1) {  //we can't have 0 for the speed and timer so we'll do this hack
-	            	        s.setProgress(1);
-	            	        scrollSpeedValue = progress*20; //TO DO hack fix this later
-	            	    } 
-	            		
-	            		else {
 		            		
-		            		if (deviceFound == 1) pixel.interactiveMode();
-		            		scrollSpeedValue = (11 - progress) * 10;
-			        		//scrollSpeedtextView_.setText(Integer.toString(progress));
-			        		
-			        		mEditor = prefs.edit();
-			                //mEditor.putString("scrollSpeedKey", String.valueOf(scrollSpeedValue));
-			                mEditor.putString("scrollSpeedKey", String.valueOf(progress));
-			                mEditor.commit();
-			                
-			                if(scrollingtextTimer_ != null) {
-		               		 	resetScrolling();
-		               	 	}
-	            		}
-		        		
+	            		if (deviceFound == 1 && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode();
+            			int progressPlus1 = progress + 1; //because we can't have 0
+            			//scrollSpeedValue = (11 - progress) * 10;
+		        		//scrollSpeedtextView_.setText(Integer.toString(progress));
+	            		scrollingKeyFrames_ = progressPlus1;
+		        		mEditor = prefs.edit();
+		                mEditor.putString("prefScrollSpeed", String.valueOf(progress));
+		                //mEditor.putInt("scrollSpeedKey", progres));
+		                mEditor.commit();
+	                
+		                if(scrollingtextTimer_ != null) {
+	               		 	resetScrolling();
+	               	 	}
 	            	}
 	            	    
 	            	if(s == fontSizeSeekBar_) {
-	            		if (deviceFound == 1) pixel.interactiveMode();	
-	            		
+	            		if (deviceFound == 1 && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode();
 	            		int rawProgress = progress;
-	            		progress = ((int)Math.round(progress/stepSize))*stepSize + 16;
+	            		progress = ((int)Math.round(progress/stepSize))*stepSize + fontSizeStepper;
 	            		fontSizeValue = progress;
 	            		paint.setTextSize(fontSizeValue);
+	            		
 	            	    mEditor = prefs.edit();
 	            		mEditor.putString("fontKey", String.valueOf(rawProgress));
 	            		mEditor.commit();
@@ -436,10 +435,27 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	               	 	}
 		            }
 	            	
+	            	if(s == VerticalPositionSeekBar) {
+	            		if (deviceFound == 1 && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode();
+	            		//int rawProgress = progress;
+	            		//progress = ((int)Math.round(progress/stepSize))*stepSize + 16;
+	            		yOffset = progress - KIND.height/2; //16 - 32/2 = 0 or 20 - 16 = 4
+	            	    mEditor = prefs.edit();
+	            		mEditor.putInt("prefYoffset", progress); 
+	            		mEditor.commit();
+	            		if(scrollingtextTimer_ != null) {
+	               		 	resetScrolling();
+	               	 	}
+		            }
+	            	
+	            	
+	            	
+	            	
 	            	
 	            }
       }
         	
+           
 	
     
         	public void onStartTrackingTouch(SeekBar s){
@@ -463,7 +479,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     }
     
     public void onColorChanged(int color) {
-    	if (deviceFound == 1) pixel.interactiveMode();
+    	if (deviceFound == 1 && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode();
     	ColorWheel = color;
     	//let's save the last color picked so the user doesn't have to re-enter next time they run the app
     	mEditor = prefs.edit();
@@ -479,13 +495,14 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	 
     private void resetScrolling() {
     	//x = 0; //having this works one scrolling sequence but then the next one doesn't come
-    	x=KIND.width *2 ; //this is what it was originally, not sure if it should go back that way
+    	x=KIND.width *2 ; //like this so the scrolling start at the edge
 	 	scrollingtextTimer_.cancel();
 		paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
         scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
     	paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
-    	yCenter = (KIND.height / 2) + ((bounds.height())/2);
-		scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);
+    	yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
+		//scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);  //scrollingKeyFrames_
+		scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);  //pick a low fps for bluetooth fps
  		scrollingtextTimer_.start();
     }
     
@@ -791,12 +808,12 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 					pixel.interactiveMode();
 					float textFPS = 1000.f / scrollSpeedValue;  //TO DO need to do the math so the scrollig speed is right, need to change this formula
 					
-					if (KIND.width == 64)  {  //TO DO this is a hack, we have a super pixel and need to put the max FPS, pixel's firmware will automatically go max fps when the frame rate is too high like 500 fps, fix this hack later
-						pixel.writeMode(500);
-					}
-					else {
+					//if (KIND.width == 64)  {  //TO DO this is a hack, we have a super pixel and need to put the max FPS, pixel's firmware will automatically go max fps when the frame rate is too high like 500 fps, fix this hack later
+						//pixel.writeMode(500);
+					//}
+					//else {
 						pixel.writeMode(textFPS);
-					}
+					//}
 					
 					writePixelAsync loadApplication = new writePixelAsync();
 	    			loadApplication.execute();
@@ -820,7 +837,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 						paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
 	 	                scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
 	 	            	paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
-	 	            	yCenter = (KIND.height / 2) + ((bounds.height())/2);
+	 	            	yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
 						scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);
 						//scrollingtextTimer_ = new ScrollingTextTimer (100000,1);
 				 		scrollingtextTimer_.start();
@@ -870,7 +887,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	  	paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
         scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
       	paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
-      	yCenter = (KIND.height / 2) + ((bounds.height())/2);
+      	yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
 		
 		messageWidth = bounds.width();        
 	        System.out.println("message width in write mode" + " " + messageWidth);
@@ -950,16 +967,14 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	  			IOIOLibVersion = ioio_.getImplVersion(v.IOIOLIB_VER);
 	  			//**********************************************************
 				
-				if (!pixelHardwareID.substring(0,4).equals("PIXL"))  //don't show the write button if it's not a PIXEL V2 board
-					writeButton_.setVisibility(View.GONE); 
+	  			if (!pixelHardwareID.substring(0,4).equals("PIXL"))  //don't show the write button if it's not a PIXEL V2 board
+	  			    hideWriteButton(); //have to do this as runnable or we'll get a crash
 				
 				pixel = new Pixel(matrix_, KIND);
-				System.out.println("PIXEL found");
+				System.out.println("PIXEL found, Hardware ID: " + pixelHardwareID);
 				
 				enableUi(true);
-				scrollText(false); //start scrolling text, false means we stream and not write. User can write if they press write button
-			
-				//matrix_.frame(frame_); //writes the select image graphic but we don't need this for this app since the text will start scrolling when the app starts
+				scrollText(false); //start scrolling text, false means we stream and not write. User can write if they press write buttonl start scrolling when the app starts
 			
 			} 
 			catch (ConnectionLostException e) 
@@ -968,9 +983,6 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 				throw e;
 			}
 		}
-		
-		//note we're not using the IOIO Loop for this as we need to go faster
-
 	}
 
 	@Override
@@ -986,6 +998,17 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 			{
 				scrollSpeedSeekBar_.setEnabled(enable);
 				writeButton_.setEnabled(enable);
+			}
+		});
+	}
+	
+	private void hideWriteButton() 
+	{
+		runOnUiThread(new Runnable() 
+		{
+			public void run() 
+			{
+				writeButton_.setVisibility(View.GONE);
 			}
 		});
 	}

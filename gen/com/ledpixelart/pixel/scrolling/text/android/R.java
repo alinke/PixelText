@@ -160,47 +160,58 @@ containing a value of this type.
         public static final int ic_menu_info_details=0x7f02000a;
         public static final int ic_menu_preferences=0x7f02000b;
         public static final int icon=0x7f02000c;
-        public static final int selectpic=0x7f02000d;
-        public static final int selectpic32=0x7f02000e;
-        public static final int splash=0x7f02000f;
+        public static final int red_btn_selector=0x7f02000d;
+        public static final int selectpic=0x7f02000e;
+        public static final int selectpic32=0x7f02000f;
+        public static final int splash=0x7f020010;
     }
     public static final class id {
         public static final int FontSeekBar=0x7f0b0005;
+        public static final int FourradioButton=0x7f0b0015;
         public static final int SeekBar=0x7f0b0004;
-        public static final int button1=0x7f0b000c;
-        public static final int countdown=0x7f0b0011;
+        public static final int VerticalBar=0x7f0b0006;
+        public static final int VerticalPosition=0x7f0b0016;
+        public static final int button1=0x7f0b000d;
+        public static final int countdown=0x7f0b0019;
         public static final int customToastImage=0x7f0b0001;
         public static final int customToastLayout=0x7f0b0000;
         public static final int customToastText=0x7f0b0002;
-        public static final int detected_label=0x7f0b0010;
-        public static final int firstTimeInstructions=0x7f0b0013;
-        public static final int firstTimeSetup1=0x7f0b0012;
-        public static final int firstTimeSetup2=0x7f0b0014;
-        public static final int firstTimeSetupCounter=0x7f0b0015;
-        public static final int fontSpinner=0x7f0b0007;
-        public static final int mainStatus=0x7f0b000f;
-        public static final int menu_about=0x7f0b0019;
-        public static final int menu_btPair=0x7f0b0017;
-        public static final int menu_instructions=0x7f0b001a;
-        public static final int menu_prefs=0x7f0b0018;
-        public static final int opacitybar=0x7f0b000b;
-        public static final int picker=0x7f0b0009;
-        public static final int sdcard=0x7f0b0016;
-        public static final int sdcard2=0x7f0b000e;
-        public static final int svbar=0x7f0b000a;
+        public static final int detected_label=0x7f0b0018;
+        public static final int firstTimeInstructions=0x7f0b001b;
+        public static final int firstTimeSetup1=0x7f0b001a;
+        public static final int firstTimeSetup2=0x7f0b001c;
+        public static final int firstTimeSetupCounter=0x7f0b001d;
+        public static final int fontSpinner=0x7f0b0008;
+        public static final int mainStatus=0x7f0b0017;
+        public static final int menu_about=0x7f0b0021;
+        public static final int menu_btPair=0x7f0b001f;
+        public static final int menu_instructions=0x7f0b0022;
+        public static final int menu_prefs=0x7f0b0020;
+        public static final int opacitybar=0x7f0b000c;
+        public static final int picker=0x7f0b000a;
+        public static final int radioButton=0x7f0b0013;
+        public static final int radioButton2=0x7f0b0012;
+        public static final int sdcard=0x7f0b001e;
+        public static final int sdcard2=0x7f0b000f;
+        public static final int svbar=0x7f0b000b;
         public static final int textField=0x7f0b0003;
-        public static final int textView1=0x7f0b000d;
-        public static final int textView3=0x7f0b0006;
-        public static final int writeButton=0x7f0b0008;
+        public static final int textView1=0x7f0b000e;
+        public static final int textView2=0x7f0b0010;
+        public static final int textView3=0x7f0b0007;
+        public static final int textView4=0x7f0b0011;
+        public static final int textView5=0x7f0b0014;
+        public static final int writeButton=0x7f0b0009;
     }
     public static final class layout {
         public static final int customizedtoast=0x7f030000;
         public static final int main=0x7f030001;
-        public static final int mainold=0x7f030002;
-        public static final int mainrel=0x7f030003;
-        public static final int rescan=0x7f030004;
-        public static final int sdcard=0x7f030005;
-        public static final int splash=0x7f030006;
+        public static final int mainlinear=0x7f030002;
+        public static final int mainold=0x7f030003;
+        public static final int mainrel=0x7f030004;
+        public static final int mainrelative=0x7f030005;
+        public static final int rescan=0x7f030006;
+        public static final int sdcard=0x7f030007;
+        public static final int splash=0x7f030008;
     }
     public static final class menu {
         public static final int mainmenu=0x7f0a0000;
@@ -316,7 +327,8 @@ containing a value of this type.
         public static final int versionString=0x7f08000a;
     }
     public static final class style {
-        public static final int AppTheme=0x7f090000;
+        public static final int AppTheme=0x7f090001;
+        public static final int ButtonText=0x7f090000;
     }
     public static final class xml {
         public static final int accessory_filter=0x7f040000;

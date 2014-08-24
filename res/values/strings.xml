@@ -39,7 +39,7 @@
    
     <string name="selected_matrix">selected_matrix</string>
     <string name="matrix">LED Panel Selection</string>
-    <string name="matrixSummary">Select your LED Panel Model</string>    
+    <string name="matrixSummary">Select PIXEL / LED Panel Model. IMPORTANT: YOU MUST CLOSE AND RESTART THIS APP AFTER CHANGING THIS VALUE.</string>    
     <string name="dialogTitleMatrix">LED Panel Selection</string>
     <string name="matrix_default_value">3</string>   
     
@@ -119,5 +119,19 @@
     <string name="dimDuringSlideShow">Dim During Slide Show</string>    
     <string name="dimDuringSlideShowDefault">true</string>
     <string name="dimDuringSlideShowSummary">Saves battery life by dimming screen during the Slide Show</string>
+    
+    <style name="ButtonText">
+    <item name="android:layout_width">fill_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">#ffffff</item>
+    <item name="android:gravity">center</item>
+    <item name="android:layout_margin">3dp</item>
+    <item name="android:textSize">18dp</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:shadowColor">#000000</item>
+    <item name="android:shadowDx">1</item>
+    <item name="android:shadowDy">1</item>
+    <item name="android:shadowRadius">2</item>
+</style>
 
 </resources>
