@@ -36,7 +36,12 @@
     android:defaultValue="@string/pref_noSleepDefault"
     android:summary="@string/noSleepSummary"/>
     
-     
+      
+    <CheckBoxPreference
+    android:title="@string/debugMode"
+    android:key="pref_debugMode"
+    android:defaultValue="@string/pref_debugModeDefault"
+    android:summary="@string/debugModeSummary"/>  
     
       <!-- <CheckBoxPreference
     android:title="Call Taxi"
@@ -52,6 +57,41 @@
     android:dialogTitle="@string/dialogTitleMatrix"
     android:defaultValue="@string/matrix_default_value" />
     
+    
+    <PreferenceCategory
+    android:title="@string/twitterSettingsTitle"  
+    android:summary="@string/twitterSettingsTitleSummary">   
+         
+    <CheckBoxPreference
+    android:title="@string/twitterMode"
+    android:key="pref_twitterMode"   
+    android:defaultValue="@string/twitterModeDefault" 
+    android:summary="@string/twitterModeSummary"/>
+    
+    <EditTextPreference
+    android:title="@string/twitterSearchString"
+    android:key="@string/pref_twitterSearchString"
+    android:defaultValue="@string/twitterSearchStringDefault"
+    android:summary="@string/twitterSearchStringSummary"/>
+    
+    <CheckBoxPreference
+    android:title="@string/twitterFilter"
+    android:key="pref_twitterFilter"   
+    android:defaultValue="@string/twitterFilterDefault" 
+    android:summary="@string/twitterFilterSummary"/>
+    
+    <ListPreference
+    android:key="@string/twitterRefresh"
+    android:title="@string/twitterRefreshTitle"
+    android:summary="@string/twitterRefreshSummary"
+    android:entries="@array/twitterRefreshArray"
+    android:entryValues="@array/twitterRefreshValues"
+    android:dialogTitle="@string/twitterRefreshTitle"
+    android:defaultValue="@string/twitterRefreshDefault" />
+	      	      
+    </PreferenceCategory>
+    
+    
     <!--
     <ListPreference
     android:key="@string/scrollingKeyFrames"
@@ -62,12 +102,7 @@
     android:dialogTitle="@string/scrollingKeyFramesDialogTitle"
     android:defaultValue="@string/scrollingKeyFramesDefault" />
     -->
-    
-    <CheckBoxPreference
-    android:title="@string/debugMode"
-    android:key="pref_debugMode"
-    android:defaultValue="@string/pref_debugModeDefault"
-    android:summary="@string/debugModeSummary"/>  
+   
    
   
     

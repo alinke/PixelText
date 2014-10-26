@@ -20,6 +20,13 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import twitter4j.Query;
+import twitter4j.QueryResult;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.ConfigurationBuilder;
 import alt.android.os.CountDownTimer;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -38,6 +45,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -66,7 +75,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-
 
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.larswerkman.holocolorpicker.ColorPicker.OnColorChangedListener;
@@ -101,6 +109,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	private static int resizedFlag = 0;
 	private ConnectTimer connectTimer; 	
 	private static ScrollingTextTimer scrollingtextTimer_;
+	private twitterTimer twitterTimer_;
   	private static int deviceFound = 0;
   	private boolean noSleep = false;	
 	private int countdownCounter;
@@ -184,6 +193,30 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	private int yOffset = 0;
 	private String prefScrollSpeed_;
 	private int fontSizeStepper = 8;
+	
+	private static Twitter twitter;
+	    
+	private static TwitterFactory twitterFactory;
+	    
+	private static Query query;
+	    
+	private static QueryResult result = null;
+	    
+    private Status status;
+    
+    private String lastTweet;
+    
+    private Integer tweetCount = 0;
+    
+    private static boolean filterTweets = true;
+    
+    private String twitterSearchString = "cats";
+    
+    private static boolean twitterMode = false;
+	
+	private static int twitterInterval = 60; //in seconds
+	
+	private static String twitterResult = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) 
@@ -243,6 +276,20 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	    VerticalPositionSeekBar.setMax(KIND.height); //maximum for y offset is 32 for pixel and 64 for super pixel 
 	    VerticalPositionSeekBar.setProgress(prefYoffset_); //start in the middle
 	    
+		if (isNetworkAvailable()) {
+	    
+		    ConfigurationBuilder cb = new ConfigurationBuilder();
+		   	 cb.setDebugEnabled(true)
+		   	   .setOAuthConsumerKey("Ax6lCfg9Yf2Niab22e9SsY75b")
+		   	   .setOAuthConsumerSecret("3isp024VgehfZ60HwbEcBt1ZZzPyoXseaWYmO4NXxoxefKY65A")
+		   	   .setOAuthAccessToken("") // we don't need these right now as we are just calling public twitter searches
+		   	   .setOAuthAccessTokenSecret("");
+		   	twitterFactory = new TwitterFactory(cb.build());
+		   	twitter = twitterFactory.getInstance();
+	   	
+		}
+	   	
+	   
 	    VerticalPositionSeekBar.setOnSeekBarChangeListener(OnSeekBarProgress);
 		
 		button.setOnClickListener(new OnClickListener() {
@@ -269,7 +316,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         scrollSpeedSeekBar_.setProgress(Integer.parseInt(prefScrollSpeed_.toString()));  
 		scrollingKeyFrames_ = Integer.parseInt(prefScrollSpeed_.toString()) + 1; //have to add the one because we can't have 0 which is the minimum scroll value
         
-		System.out.println("scrolling frames: " +scrollingKeyFrames_ );
+		System.out.println("scrolling frames: " + (scrollSpeedSeekBar_.getProgress() + 1) );
 		
         fontSizeSeekBar_ = (SeekBar)findViewById(R.id.FontSeekBar);
         fontSizeSeekBar_.setOnSeekBarChangeListener(OnSeekBarProgress);
@@ -322,7 +369,6 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fontSpinner.setAdapter(adapter);
-
         fontSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
 
         {
@@ -389,7 +435,16 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
             public void onTextChanged(CharSequence s, int start, int before, int count){}
         }); 
     	
+    	if (isNetworkAvailable()) {
     	
+	    	if (twitterMode) {
+		    	twitterTimer_ = new twitterTimer (100000,twitterInterval*1000);  //the prefs is in seconds so we'll need to convert to milliseconds
+		    	twitterTimer_.start();
+	    	}
+    	}
+    	else {
+    		showToast("Twitter mode is on but no Internet");
+    	}
     	
     }  //end oncreate
 
@@ -447,11 +502,6 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	               		 	resetScrolling();
 	               	 	}
 		            }
-	            	
-	            	
-	            	
-	            	
-	            	
 	            }
       }
         	
@@ -466,6 +516,17 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 
         	}
     };
+    
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager 
+              = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+    
+    private  void stopTimers() {
+    	if (twitterTimer_ != null) twitterTimer_.cancel();
+    }
     
     @SuppressLint("ParserError")
 	private void handleSendText(Intent intent) {  //not used
@@ -502,9 +563,11 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     	paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
     	yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
 		//scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);  //scrollingKeyFrames_
-		scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);  //pick a low fps for bluetooth fps
+		scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);  //scrollSpeedValue was changed, we hard code at 100
  		scrollingtextTimer_.start();
     }
+    
+   
     
     private void setFont(int fontPosition) {
     	
@@ -692,10 +755,6 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
      noSleep = prefs.getBoolean("pref_noSleep", false);
      debug_ = prefs.getBoolean("pref_debugMode", false);
      
-     //scrollSpeed = Integer.valueOf(prefs.getString(   //the selected RGB LED Matrix Type
- 	   //     resources.getString(R.string.selected_scrollSpeed),
- 	    //    resources.getString(R.string.scrollSpeed_default_value))); 
-     
      scrollingKeyFrames_ = Integer.valueOf(prefs.getString(   //how smooth the scrolling, essentially the keyframes
  	        resources.getString(R.string.scrollingKeyFrames),
  	        resources.getString(R.string.scrollingKeyFramesDefault))); 
@@ -704,6 +763,18 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
      matrix_model = Integer.valueOf(prefs.getString(   //the selected RGB LED Matrix Type
     	        resources.getString(R.string.selected_matrix),
     	        resources.getString(R.string.matrix_default_value))); 
+     
+     twitterSearchString = prefs.getString(   
+ 	        resources.getString(R.string.pref_twitterSearchString),
+ 	        resources.getString(R.string.twitterSearchStringDefault)); 
+     
+     twitterMode = prefs.getBoolean("pref_twitterMode", false);
+     
+     filterTweets = prefs.getBoolean("pref_twitterFilter", true);
+     
+     twitterInterval = Integer.valueOf(prefs.getString(   //the selected RGB LED Matrix Type
+ 	        resources.getString(R.string.twitterRefresh),
+ 	        resources.getString(R.string.twitterRefreshDefault))); 
      
      switch (matrix_model) {  //get this from the preferences
      case 0:
@@ -786,6 +857,33 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	 loadRGB565(); //this function loads a raw RGB565 image to the matrix
  }
     
+    private void updatePrefs() {
+    	setPreferences();
+    	stopTimers();
+    	
+    	//now we need to start twitter and scrolling text timers here
+    	
+    	if (scrollingtextTimer_ != null) {
+    		 	resetScrolling();
+    	}
+    	
+    	if (isNetworkAvailable()) {
+	    	if (twitterMode) {
+		    	twitterTimer_ = new twitterTimer (100000,twitterInterval*1000);  //the prefs is in seconds so we'll need to convert to milliseconds
+		    	twitterTimer_.start();
+	    	}
+    	}	
+    }
+    
+    protected void onResume() {
+        super.onResume();
+        
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        updatePrefs();
+        //setPreferences();
+     
+    }
+    
     private  void scrollTextButtonWrite() { //this gets called if the user hit the write button
     	
     	if (deviceFound == 1) {
@@ -814,6 +912,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 					//else {
 						pixel.writeMode(textFPS);
 					//}
+						
+					stopTimers(); //stop the twitter timer if it's running	
 					
 					writePixelAsync loadApplication = new writePixelAsync();
 	    			loadApplication.execute();
@@ -891,7 +991,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 		
 		messageWidth = bounds.width();        
 	        System.out.println("message width in write mode" + " " + messageWidth);
-	        x = 0;
+	        //x = 0;
+	        x = KIND.width *2 ; //need to have this to have the space
 	        resetX = 0 - messageWidth;
 	        System.out.println("ResetX" + " " + resetX);
 	        System.out.println("x" + " " + x);
@@ -913,7 +1014,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
   	            {	
   	               
 					pixel.writeMessageToPixel(x, scrollingText, paint,yCenter); //let's write the text
-  	                x = x - scrollingKeyFrames_ ;  //controls the smoothness / number of keyframes
+  	               // x = x - scrollingKeyFrames_ ;  //this wasn't getting the latest so changed to below
+  	                x = x - (scrollSpeedSeekBar_.getProgress() + 1);
 					System.out.println("writing frame" + " " + x);
 					progress_status++;
 				    publishProgress(progress_status);
@@ -932,7 +1034,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	  protected void onProgressUpdate(Integer... values) {
 	   super.onProgressUpdate(values);
 	   
-	   progress.incrementProgressBy(1*scrollingKeyFrames_);
+	   progress.incrementProgressBy(1*(scrollSpeedSeekBar_.getProgress() + 1));
 	    
 	  }
 	   
@@ -940,6 +1042,16 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	  protected void onPostExecute(Void result) {
 		  progress.dismiss();
 		  pixel.playLocalMode();
+		  
+		  //ok we're done writing so let's restart the twitter timer if we need to
+		  if (isNetworkAvailable()) {
+		    	if (twitterMode) {
+			    	twitterTimer_ = new twitterTimer (100000,twitterInterval*1000);  //the prefs is in seconds so we'll need to convert to milliseconds
+			    	twitterTimer_.start();
+		    	}
+	    	}	
+		  
+		  
 	  
 	  super.onPostExecute(result);
 }
@@ -1080,10 +1192,37 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
  	            }
  	            else
  	            {
- 	                x = x - scrollingKeyFrames_ ;  //let's add a new pref here
+ 	                //x = x - scrollingKeyFrames_ ;  
+ 	                x = x - (scrollSpeedSeekBar_.getProgress() + 1);
  	            }
 	 		}
 	 	}
+	 
+	 public class twitterTimer extends CountDownTimer
+	 	{
+
+	 		public twitterTimer(long startTime, long interval)
+	 			{
+	 				super(startTime, interval); 
+	 				
+	 			}
+
+	 		@Override
+	 		public void onFinish()
+	 			{
+	 			twitterTimer_.start(); //restart the timer to keep is going
+	 				
+	 			}
+
+	 		@Override
+	 		public void onTick(long millisUntilFinished)  {
+
+	 			twitterSearchAsync loadApplication = new twitterSearchAsync(); //twitter has to run as an async task on android or we'll get an error
+    			loadApplication.execute();
+	 			
+	 		}
+	 	}	 
+	 
   
   private void showNotFound() {	
 		AlertDialog.Builder alert=new AlertDialog.Builder(this);
@@ -1100,5 +1239,79 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 			}
 		});
 	}
+	
+	 public class twitterSearchAsync extends AsyncTask<Void, Integer, Void>{
+	      
+		  @Override
+		  protected void onPreExecute() {
+	      super.onPreExecute();
+	     
+	  }
+	      
+	  @Override
+	  protected Void doInBackground(Void... params) {
+		  
+		   	query = new Query(twitterSearchString);
+		        
+				try {
+					result = twitter.search(query);
+					System.out.println("Number of matched tweets: " + result.getCount());
+				} catch (TwitterException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				for (twitter4j.Status status : result.getTweets()) {
+					
+					if (filterTweets) { // then we don't want @ mentions or http:// tweets
+						if (!status.getText().contains("RT") && !status.getText().contains("http://") && !status.getText().contains("@")) {   //retweets have "RT" in them, we don't want retweets in this case
+							
+							//System.out.println("@" + status.getUser().getScreenName() + ":" + status.getText());
+							twitterResult = status.getText();
+							System.out.println(status.getText());
+							
+						}
+					}
+					
+					else {
+						if (!status.getText().contains("RT")) {
+							
+							//System.out.println("@" + status.getUser().getScreenName() + ":" + status.getText());
+							twitterResult = status.getText();
+							System.out.println(status.getText()); //it's the last one so let's display it
+						}
+					}
+		        }
+				
+				if (twitterResult == null) {
+					twitterResult = "No match found for Twitter search: " + twitterSearchString;
+				}
+				
+				
+			return null;
+	  
+	  }
+	  
+	  @Override
+	  protected void onProgressUpdate(Integer... values) {
+	   super.onProgressUpdate(values);
+	    
+	  }
+	   
+	  @Override
+	  protected void onPostExecute(Void result) {
+	
+			textField.setText(twitterResult);
+	  
+	  super.onPostExecute(result);
+}
+	
+}
+	
+	
+	
+	
+	
+	
+	
 	
 }

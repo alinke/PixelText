@@ -64,14 +64,13 @@
 		    android:text="Font:"
 		    android:textAppearance="?android:attr/textAppearanceSmall" />
 
-
-
 		<Spinner
-	    android:id="@+id/fontSpinner"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:prompt="@string/fontSpinner_title" />
+		    android:id="@+id/fontSpinner"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    android:prompt="@string/fontSpinner_title"
+		     />
 
 	</LinearLayout>
 
@@ -110,6 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Change Color"
+            android:visibility="gone"
             android:layout_weight="1" />
  
         <TextView
@@ -119,6 +119,7 @@
             android:text="Text Color"
             android:textColor="@android:color/white"
             android:textSize="20sp"
+            android:visibility="gone"
             android:layout_weight="1" />
  
     </LinearLayout>

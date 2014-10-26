@@ -17,6 +17,38 @@
     <item>4</item>
     <item>5</item>
 </string-array>
+    
+ <string-array name="twitterRefreshArray">
+    <item>10s</item>
+    <item>30s</item>
+    <item>1 min</item>
+    <item>2 min</item>
+    <item>5 min</item>
+    <item>10 min</item>
+    <item>30 min</item>
+    <item>1 hour</item>
+    <item>2 hours</item>
+    <item>4 hours</item>
+    <item>8 hours</item>
+    <item>16 hours</item>
+    <item>24 hours</item>
+</string-array>
+	
+<string-array name="twitterRefreshValues">
+     <item>10</item>
+    <item>30</item>
+    <item>60</item>
+    <item>120</item>
+    <item>300</item>
+    <item>600</item>
+    <item>1800</item>
+    <item>3600</item>
+    <item>7200</item>
+    <item>14400</item>
+    <item>28800</item>
+    <item>57600</item>
+    <item>86400</item>
+</string-array>
 	
 <string-array name="matrix_options">
     <item>Seeed 32x16</item>

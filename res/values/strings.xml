@@ -43,6 +43,28 @@
     <string name="dialogTitleMatrix">LED Panel Selection</string>
     <string name="matrix_default_value">3</string>   
     
+    <string name="twitterRefresh">twitterRefresh</string>
+    <string name="twitterRefreshTitle">Twitter refresh interval</string>
+    <string name="twitterRefreshSummary">How often to refresh the Twitter search feed</string>   
+    <string name="twitterRefreshDefault">60</string>   
+    
+    <string name="twitterSettingsTitle">Twitter</string>   
+    <string name="twitterSettingsTitleSummary">Twitter Settings</string>  
+    
+    <string name="twitterMode">Twitter Mode</string>    
+    <string name="twitterModeDefault">false</string>
+    <string name="twitterModeSummary">Twitter feed search</string>
+   
+    <string name="twitterFilter">Filter Tweets</string>    
+    <string name="twitterFilterDefault">true</string>
+    <string name="twitterFilterSummary">Filters Tweets containing http:// or @</string>
+    
+    <string name="twitterSearchString">Twitter Search Term</string>    
+    <string name="pref_twitterSearchString">pref_twitterSearchString</string>
+    <string name="twitterSearchStringDefault">cats</string>
+    <string name="twitterSearchStringSummary">Returns Tweets matching this search term</string>
+    
+    
     <string name="scrollingKeyFrames">scrollingKeyFrames</string>
     <string name="scrollingKeyFramesTitle">Scrolling Smoothness</string>
     <string name="scrollingKeyFramesSummary">How smooth the text scrolls, less smoothness equals faster scrolling</string>    
@@ -51,7 +73,7 @@
     
     <string name="menu_btPair_title">Bluetooth Pair PIXEL | Code 0000 or 4545</string>  
     
-    <string name="versionString">App Version</string> 
+   
     <string name="BootloaderVersionString">Bootloader Version</string> 
     <string name="FirmwareVersionString">Firmware Version</string> 
     <string name="LibraryVersionString">Library Version</string> 
@@ -94,7 +116,6 @@
     <string name="scrollSpeed">Scroll Speed</string>    
     <string name="pref_scrollSpeed">pref_scrollSpeed</string>
     <string name="scrollSpeedDefault">7</string>
-    <string name="scrollSpeedSummary">Text Scroll Speed Between 1 and 10</string>
     
     <string name="pauseBetweenImagesDuration">Pause Between Images</string>    
     <string name="pref_pauseBetweenImagesDuration">pref_pauseBetweenImagesDuration</string>
