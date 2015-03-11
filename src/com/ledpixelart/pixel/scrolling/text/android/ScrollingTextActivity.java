@@ -260,6 +260,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         prefFontPosition = prefs.getInt("fontPositionKey", 0);
         
         textField.setText(prefScrollingText);
+       
         
         picker = (ColorPicker) findViewById(R.id.picker);
 		svBar = (SVBar) findViewById(R.id.svbar);
@@ -547,6 +548,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
  		mEditor.putInt("colorKey", ColorWheel);
  		mEditor.commit();
  		
+ 		
+ 		
  		if(scrollingtextTimer_ != null) {
    		 	resetScrolling();
    	 	}
@@ -655,6 +658,10 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	        	
 	        case 20:
 	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/smalltype.ttf");
+	        	break;	
+	        	
+	        case 21:
+	        	selectedFont = Typeface.createFromAsset(getAssets(), "fonts/braille.ttf");
 	        	break;	
 	        	
 	        default:

@@ -38,9 +38,9 @@
     <string name="notFoundString">PIXEL Not Found</string>   
    
     <string name="selected_matrix">selected_matrix</string>
-    <string name="matrix">LED Panel Selection</string>
+    <string name="matrix">PIXEL Model</string>
     <string name="matrixSummary">Select PIXEL / LED Panel Model. IMPORTANT: YOU MUST CLOSE AND RESTART THIS APP AFTER CHANGING THIS VALUE.</string>    
-    <string name="dialogTitleMatrix">LED Panel Selection</string>
+    <string name="dialogTitleMatrix">PIXEL Model</string>
     <string name="matrix_default_value">3</string>   
     
     <string name="twitterRefresh">twitterRefresh</string>
