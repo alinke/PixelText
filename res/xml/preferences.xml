@@ -30,12 +30,26 @@
     android:defaultValue="@string/pref_scanAll_default"
     android:summary="@string/scanAllSummary"/>-->
     
+      <ListPreference
+    android:key="@string/selected_matrix"
+    android:title="@string/matrix"
+    android:summary="@string/matrixSummary"
+    android:entries="@array/matrix_options"
+    android:entryValues="@array/matrix_values"
+    android:dialogTitle="@string/dialogTitleMatrix"
+    android:defaultValue="@string/matrix_default_value" />
+    
     <CheckBoxPreference
     android:title="@string/noSleep"
     android:key="pref_noSleep"
     android:defaultValue="@string/pref_noSleepDefault"
     android:summary="@string/noSleepSummary"/>
     
+    <CheckBoxPreference
+    android:title="@string/AutoSelectPanel"
+    android:key="pref_AutoSelectPanel"
+    android:defaultValue="@string/pref_AutoSelectPanelDefault"
+    android:summary="@string/AutoSelectPanelSummary"/>
       
     <CheckBoxPreference
     android:title="@string/debugMode"
@@ -48,14 +62,7 @@
     android:key="pref_taxi"
     android:summary="Call Taxi when Tipsy or Drunk"/> -->
    
-    <ListPreference
-    android:key="@string/selected_matrix"
-    android:title="@string/matrix"
-    android:summary="@string/matrixSummary"
-    android:entries="@array/matrix_options"
-    android:entryValues="@array/matrix_values"
-    android:dialogTitle="@string/dialogTitleMatrix"
-    android:defaultValue="@string/matrix_default_value" />
+  
     
     
     <PreferenceCategory

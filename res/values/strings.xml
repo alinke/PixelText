@@ -18,11 +18,11 @@
     <string name="fontSpinner_title">Select Font</string> 
          
    <string name="oneTimeSetupString">One Time Setup: Copying stock images to your SD card.</string> 
-   <string name="bluetoothPairingString">Please ensure Bluetooth pairing has been completed prior. The Bluetooth pairing code is: 4545."</string> 
+   <string name="bluetoothPairingString">Please ensure Bluetooth pairing has been completed prior. The Bluetooth pairing code is: 0000."</string> 
     
    
    <string name="menu_instructions_title">Instructions</string>
-   <string name="setupInstructionsString">Pair your Android device to PIXEL which will show up as \'PIXEL\' in Bluetooth using code 4545</string>
+   <string name="setupInstructionsString">Pair your Android device to PIXEL which will show up as \'PIXEL\' in Bluetooth using code 0000</string>
    <string name="setupInstructionsStringTitle">Instructions</string>   
     
      
@@ -39,7 +39,7 @@
    
     <string name="selected_matrix">selected_matrix</string>
     <string name="matrix">PIXEL Model</string>
-    <string name="matrixSummary">Select PIXEL / LED Panel Model. IMPORTANT: YOU MUST CLOSE AND RESTART THIS APP AFTER CHANGING THIS VALUE.</string>    
+    <string name="matrixSummary">Select PIXEL / LED Panel Model</string>    
     <string name="dialogTitleMatrix">PIXEL Model</string>
     <string name="matrix_default_value">3</string>   
     
@@ -71,7 +71,7 @@
     <string name="scrollingKeyFramesDialogTitle">Scrolling Smoothness</string>
     <string name="scrollingKeyFramesDefault">1</string> 
     
-    <string name="menu_btPair_title">Bluetooth Pair PIXEL | Code 0000 or 4545</string>  
+    <string name="menu_btPair_title">Bluetooth Pair PIXEL | Code 0000 or 4545 for PIXEL V1</string>  
     
    
     <string name="BootloaderVersionString">Bootloader Version</string> 
@@ -87,7 +87,7 @@
     
     
     <string name="bluetooth_pair">Blueooth Pairing</string>
-    <string name="bluetooth_pairSummary">Shortcut to the Bluetooth settings screen. Pair to IOIO using code: 4545</string>
+    <string name="bluetooth_pairSummary">Shortcut to the Bluetooth settings screen. Pair to IOIO using code: 0000</string>
     
     <string name="slideShowtitle">Slide Show Settings</string>
     <string name="slideShowtitleSummary">Slide Show Settings</string>
@@ -134,7 +134,12 @@
     <string name="debugMode">Debug Mode</string>    
     <string name="pref_debugMode">pref_debugMode</string>
     <string name="pref_debugModeDefault">false</string>    
-    <string name="debugModeSummary">Displays debug messages, use to see how often the Bluetooth connections are getting disconnected and connected as well as other debug messages</string>
+    <string name="debugModeSummary"></string>
+    
+     <string name="AutoSelectPanel">Auto Select PIXEL / LED Panel</string>    
+    <string name="pref_AutoSelectPanel">pref_AutoSelectPanel</string>
+    <string name="pref_AutoSelectPanelDefault">true</string>
+    <string name="AutoSelectPanelSummary">Turn this off if you want to manually select the LED panel</string>
     
     
     <string name="dimDuringSlideShow">Dim During Slide Show</string>    

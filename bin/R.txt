@@ -114,6 +114,8 @@ int raw selectimage32 0x7f050011
 int raw selectimage64 0x7f050012
 int raw selectpic 0x7f050013
 int raw selectpic32 0x7f050014
+int string AutoSelectPanel 0x7f080062
+int string AutoSelectPanelSummary 0x7f080065
 int string BootloaderVersionString 0x7f080034
 int string FirmwareVersionString 0x7f080035
 int string HardwareVersionString 0x7f080037
@@ -129,9 +131,9 @@ int string defaultScrollSpeed 0x7f080004
 int string defaultText 0x7f080003
 int string dialogTitleMatrix 0x7f08001c
 int string dialogTitlescrollSpeed 0x7f08003b
-int string dimDuringSlideShow 0x7f080062
-int string dimDuringSlideShowDefault 0x7f080063
-int string dimDuringSlideShowSummary 0x7f080064
+int string dimDuringSlideShow 0x7f080066
+int string dimDuringSlideShowDefault 0x7f080067
+int string dimDuringSlideShowSummary 0x7f080068
 int string firstTime_instructions 0x7f08004b
 int string fontSpinner_title 0x7f08000b
 int string hello_world 0x7f080005
@@ -159,6 +161,8 @@ int string pauseBetweenImagesDurationDefault 0x7f080055
 int string pauseBetweenImagesDurationSummary 0x7f080056
 int string prefSummary 0x7f080013
 int string prefTitle 0x7f080011
+int string pref_AutoSelectPanel 0x7f080063
+int string pref_AutoSelectPanelDefault 0x7f080064
 int string pref_debugMode 0x7f08005f
 int string pref_debugModeDefault 0x7f080060
 int string pref_imageDisplayDuration 0x7f08004d

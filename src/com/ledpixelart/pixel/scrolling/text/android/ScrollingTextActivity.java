@@ -217,6 +217,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	private static int twitterInterval = 60; //in seconds
 	
 	private static String twitterResult = null;
+	
+	private boolean AutoSelectPanel_ = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) 
@@ -783,85 +785,190 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
  	        resources.getString(R.string.twitterRefresh),
  	        resources.getString(R.string.twitterRefreshDefault))); 
      
-     switch (matrix_model) {  //get this from the preferences
-     case 0:
-    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x16;
-    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage16);
-    	 frame_length = 1024;
-    	 currentResolution = 16;
-    	 break;
-     case 1:
-    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x16;
-    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage16);
-    	 frame_length = 1024;
-    	 currentResolution = 16;
-    	 break;
-     case 2:
-    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32_NEW; //v1
-    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
-    	 frame_length = 2048;
-    	 currentResolution = 32;
-    	 break;
-     case 3:
-    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2
-    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
-    	 frame_length = 2048;
-    	 currentResolution = 32;
-    	 break;
-     case 4:
-    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x32; 
-    	 BitmapInputStream = getResources().openRawResource(R.raw.select64by32);
-    	 frame_length = 8192;
-    	 currentResolution = 64; 
-    	 break;
-     case 5:
-    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x64; 
-    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by64);
-    	 frame_length = 8192;
-    	 currentResolution = 64; 
-    	 break;	 
-     case 6:
-    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_2_MIRRORED; 
-    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by64);
-    	 frame_length = 8192;
-    	 currentResolution = 64; 
-    	 break;	 	 
-     case 7:
-    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_4_MIRRORED;
-    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by128);
-    	 frame_length = 8192;
-    	 currentResolution = 128; 
-     case 8:
-    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_128x32; //horizontal
-    	 BitmapInputStream = getResources().openRawResource(R.raw.select128by32);
-    	 frame_length = 8192;
-    	 currentResolution = 128;  
-    	 break;	 
-     case 9:
-    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x128; //vertical mount
-    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by128);
-    	 frame_length = 8192;
-    	 currentResolution = 128; 
-    	 break;	 
-     case 10:
-    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x64;
-    	 BitmapInputStream = getResources().openRawResource(R.raw.select64by64);
-    	 frame_length = 8192;
-    	 currentResolution = 128; 
-    	 break;	 	 		 
-     default:	    		 
-    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2 as the default
-    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
-    	 frame_length = 2048;
-    	 currentResolution = 32;
-     }
-     
-     //matrix_number = matrix_model;
-         
+     if (AutoSelectPanel_ && pixelHardwareID.substring(0,4).equals("PIXL") && !pixelFirmware.substring(4,5).equals("0")) { // PIXL0008 or PIXL0009 is the normal so if it's just a 0 for the 5th character, then we don't go here
+	    	
+ 	 	//let's first check if we have a matching firmware to auto-select and if not, we'll just go what the matrix from preferences
+	  
+	  		if (pixelHardwareID.substring(4,5).equals("Q")) {
+ 	 		matrix_model = 11;
+ 	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32;
+		    	BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+		    	frame_length = 2048;
+		    	currentResolution = 32; 
+ 	 	}
+ 	 	else if (pixelHardwareID.substring(4,5).equals("T")) {
+ 	 		matrix_model = 14;
+ 	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x64;
+		    	BitmapInputStream = getResources().openRawResource(R.raw.select64by64);
+		    	frame_length = 8192;
+		    	currentResolution = 128; 
+ 	 	}
+ 	 	else if (pixelHardwareID.substring(4,5).equals("I")) {
+ 	 		matrix_model = 1; 
+ 	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x16;
+		    	BitmapInputStream = getResources().openRawResource(R.raw.selectimage16);
+		    	frame_length = 1024;
+		    	currentResolution = 16;
+ 	 	}
+ 	 	else if (pixelHardwareID.substring(4,5).equals("L")) { //low power
+ 	 		matrix_model = 1; 
+ 	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x16;
+		    	BitmapInputStream = getResources().openRawResource(R.raw.selectimage16);
+		    	frame_length = 1024;
+		    	currentResolution = 16;
+ 	 	}
+ 	 	else if (pixelHardwareID.substring(4,5).equals("C")) {
+ 	 		matrix_model = 12; 
+ 	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32_ColorSwap;
+		    	BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+		    	frame_length = 2048;
+		    	currentResolution = 32; 
+ 	 	}
+ 	 	else if (pixelHardwareID.substring(4,5).equals("R")) {
+ 	 		matrix_model = 13; 
+ 	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x32;
+		    	BitmapInputStream = getResources().openRawResource(R.raw.select64by32);
+		    	frame_length = 4096;
+		    	currentResolution = 64; 
+ 	 	}
+ 	 	else if (pixelHardwareID.substring(4,5).equals("M")) { //low power
+ 	 		 matrix_model = 3;
+ 	 		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //pixel v2
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+		    	 frame_length = 2048;
+		    	 currentResolution = 32;
+ 	 	}
+ 	 	else if (pixelHardwareID.substring(4,5).equals("N")) { //low power
+ 	 		 matrix_model = 11;
+ 	 		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32; //pixel v2.5
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+		    	 frame_length = 2048;
+		    	 currentResolution = 32; 
+ 	 	}
+ 	 	else {  //in theory, we should never go here
+ 	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32;
+		    	BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+		    	frame_length = 2048;
+		    	currentResolution = 32; 
+ 	 	}
+		}	
+
+    else {
+	     switch (matrix_model) {  //get this from the preferences
+		     case 0:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x16;
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage16);
+		    	 frame_length = 1024;
+		    	 currentResolution = 16;
+		    	 break;
+		     case 1:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x16;
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage16);
+		    	 frame_length = 1024;
+		    	 currentResolution = 16;
+		    	 break;
+		     case 2:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32_NEW; //v1, this matrix was never used
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+		    	 frame_length = 2048;
+		    	 currentResolution = 32;
+		    	 break;
+		     case 3:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+		    	 frame_length = 2048;
+		    	 currentResolution = 32;
+		    	 break;
+		     case 4:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x32; 
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.select64by32);
+		    	 frame_length = 8192;
+		    	 currentResolution = 64; 
+		    	 break;
+		     case 5:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x64; 
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by64);
+		    	 frame_length = 8192;
+		    	 currentResolution = 64; 
+		    	 break;	 
+		     case 6:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_2_MIRRORED; 
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by64);
+		    	 frame_length = 8192;
+		    	 currentResolution = 64; 
+		    	 break;	 	 
+		     case 7: //this one doesn't work and we don't use it rigth now
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_4_MIRRORED;
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by64);
+		    	 frame_length = 8192; //original 8192
+		    	 currentResolution = 128; //original 128
+		    	 break;
+		     case 8:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_128x32; //horizontal
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.select128by32);
+		    	 frame_length = 8192;
+		    	 currentResolution = 128;  
+		    	 break;	 
+		     case 9:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x128; //vertical mount
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by128);
+		    	 frame_length = 8192;
+		    	 currentResolution = 128; 
+		    	 break;	 
+		     case 10:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x64;
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.select64by64);
+		    	 frame_length = 8192;
+		    	 currentResolution = 128; 
+		    	 break;
+		     case 11:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32;
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+		    	 frame_length = 2048;
+		    	 currentResolution = 32; 
+		    	 break;	 
+		     case 12:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32_ColorSwap;
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+		    	 frame_length = 2048;
+		    	 currentResolution = 32; 
+		    	 break;	 	 
+		     case 13:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x32;
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.select64by32);
+		    	 frame_length = 4096;
+		    	 currentResolution = 64; 
+		    	 break;	
+		     case 14:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x64;
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.select64by64);
+		    	 frame_length = 8192;
+		    	 currentResolution = 128; 
+		    	 break;
+		     case 15:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_128x32;
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.select128by32);
+		    	 frame_length = 8192;
+		    	 currentResolution = 128; 
+		    	 break;	 	 	
+		     case 16:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x128;
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by128);
+		    	 frame_length = 8192;
+		    	 currentResolution = 128; 
+		    	 break;	 	 	
+		     default:	    		 
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2 as the default
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+		    	 frame_length = 2048;
+		    	 currentResolution = 32;
+		     }
+ 	 }
+      
      frame_ = new short [KIND.width * KIND.height];
 	 BitmapBytes = new byte[KIND.width * KIND.height *2]; //512 * 2 = 1024 or 1024 * 2 = 2048
 	 
-	 loadRGB565(); //this function loads a raw RGB565 image to the matrix
+	 loadRGB565(); //load the select pic raw565 file
  }
     
     private void updatePrefs() {
@@ -1089,7 +1196,28 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	  			if (!pixelHardwareID.substring(0,4).equals("PIXL"))  //don't show the write button if it's not a PIXEL V2 board
 	  			    hideWriteButton(); //have to do this as runnable or we'll get a crash
 				
-				pixel = new Pixel(matrix_, KIND);
+	  			 if (AutoSelectPanel_ && pixelHardwareID.substring(0,4).equals("PIXL") && !pixelHardwareID.substring(4,5).equals("0")) { //only go here if we have a firmware that is set to auto-detect, otherwise we can skip this
+	 	  			runOnUiThread(new Runnable() 
+	 	  			{
+	 	  			   public void run() 
+	 	  			   {
+	 	  				  
+	 	  				   updatePrefs();
+	 	  				   
+	 	  				   pixel = new Pixel(matrix_, KIND);
+						 //matrix_ = ioio_.openRgbLedMatrix(KIND);
+	 	  			      
+	 	  			   }
+	 	  			}); 
+	   			}
+	   		   
+	   		   else { //we didn't auto-detect so just go the normal way
+	   			  //matrix_ = ioio_.openRgbLedMatrix(KIND);
+	   			  pixel = new Pixel(matrix_, KIND);
+	   		   }
+	  			
+	  			
+	  			//pixel = new Pixel(matrix_, KIND);
 				System.out.println("PIXEL found, Hardware ID: " + pixelHardwareID);
 				
 				enableUi(true);

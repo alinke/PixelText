@@ -242,6 +242,8 @@ containing a value of this type.
         public static final int selectpic32=0x7f050014;
     }
     public static final class string {
+        public static final int AutoSelectPanel=0x7f080062;
+        public static final int AutoSelectPanelSummary=0x7f080065;
         public static final int BootloaderVersionString=0x7f080034;
         public static final int FirmwareVersionString=0x7f080035;
         public static final int HardwareVersionString=0x7f080037;
@@ -257,9 +259,9 @@ containing a value of this type.
         public static final int defaultText=0x7f080003;
         public static final int dialogTitleMatrix=0x7f08001c;
         public static final int dialogTitlescrollSpeed=0x7f08003b;
-        public static final int dimDuringSlideShow=0x7f080062;
-        public static final int dimDuringSlideShowDefault=0x7f080063;
-        public static final int dimDuringSlideShowSummary=0x7f080064;
+        public static final int dimDuringSlideShow=0x7f080066;
+        public static final int dimDuringSlideShowDefault=0x7f080067;
+        public static final int dimDuringSlideShowSummary=0x7f080068;
         public static final int firstTime_instructions=0x7f08004b;
         public static final int fontSpinner_title=0x7f08000b;
         public static final int hello_world=0x7f080005;
@@ -287,6 +289,8 @@ containing a value of this type.
         public static final int pauseBetweenImagesDurationSummary=0x7f080056;
         public static final int prefSummary=0x7f080013;
         public static final int prefTitle=0x7f080011;
+        public static final int pref_AutoSelectPanel=0x7f080063;
+        public static final int pref_AutoSelectPanelDefault=0x7f080064;
         public static final int pref_debugMode=0x7f08005f;
         public static final int pref_debugModeDefault=0x7f080060;
         public static final int pref_imageDisplayDuration=0x7f08004d;
