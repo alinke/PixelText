@@ -112,8 +112,9 @@ int raw selectimage128 0x7f05000f
 int raw selectimage16 0x7f050010
 int raw selectimage32 0x7f050011
 int raw selectimage64 0x7f050012
-int raw selectpic 0x7f050013
-int raw selectpic32 0x7f050014
+int raw selectimage64by16 0x7f050013
+int raw selectpic 0x7f050014
+int raw selectpic32 0x7f050015
 int string AutoSelectPanel 0x7f080062
 int string AutoSelectPanelSummary 0x7f080065
 int string BootloaderVersionString 0x7f080034

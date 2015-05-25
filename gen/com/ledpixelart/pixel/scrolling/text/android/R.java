@@ -238,8 +238,9 @@ containing a value of this type.
         public static final int selectimage16=0x7f050010;
         public static final int selectimage32=0x7f050011;
         public static final int selectimage64=0x7f050012;
-        public static final int selectpic=0x7f050013;
-        public static final int selectpic32=0x7f050014;
+        public static final int selectimage64by16=0x7f050013;
+        public static final int selectpic=0x7f050014;
+        public static final int selectpic32=0x7f050015;
     }
     public static final class string {
         public static final int AutoSelectPanel=0x7f080062;

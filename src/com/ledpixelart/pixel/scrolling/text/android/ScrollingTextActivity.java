@@ -956,6 +956,12 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by128);
 		    	 frame_length = 8192;
 		    	 currentResolution = 128; 
+		    	 break;	 
+		     case 17:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x16;
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+		    	 frame_length = 2048;
+		    	 currentResolution = 32; 
 		    	 break;	 	 	
 		     default:	    		 
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2 as the default
