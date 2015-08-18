@@ -249,17 +249,17 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         textField = (EditText) findViewById(R.id.textField);  //the scrolling text
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
         
-    	prefs = getSharedPreferences("appSave", MODE_PRIVATE);
-        prefFontSize = prefs.getString("fontKey", "14");
+        savePrefs = getSharedPreferences("appSave", MODE_PRIVATE);
+        prefFontSize = savePrefs.getString("fontKey", "14");
        // prefYoffset_ = prefs.getInt("prefYoffset", KIND.height/2); //default to in the middle
         
-        prefYoffset_ = prefs.getInt("prefYoffset", KIND.height/2); //default to in the middle
+        prefYoffset_ = savePrefs.getInt("prefYoffset", KIND.height/2); //default to in the middle
         yOffset = prefYoffset_ - KIND.height/2; //16 - 32/2 = 0 or 20 - 16 = 4
         
-        prefScrollSpeed_ = prefs.getString("prefScrollSpeed", "1");
-        prefScrollingText = prefs.getString("scrollingTextKey","TYPE TEXT HERE");
-        prefColor = prefs.getInt("colorKey", 333333);
-        prefFontPosition = prefs.getInt("fontPositionKey", 0);
+        prefScrollSpeed_ = savePrefs.getString("prefScrollSpeed", "1");
+        prefScrollingText = savePrefs.getString("scrollingTextKey","TYPE TEXT HERE");
+        prefColor = savePrefs.getInt("colorKey", 333333);
+        prefFontPosition = savePrefs.getInt("fontPositionKey", 0);
         
         textField.setText(prefScrollingText);
        
@@ -398,7 +398,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
        	 	}
 	        
 	        //let's also save the font for the next time
-	    	mEditor = prefs.edit();
+	    	mEditor = savePrefs.edit();
             mEditor.putInt("fontPositionKey", index);
             mEditor.commit();
 	      
@@ -431,7 +431,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
             		 resetScrolling();
             	 }
             	
-            	mEditor = prefs.edit();
+            	mEditor = savePrefs.edit();
                 mEditor.putString("scrollingTextKey", textField.getText().toString());
                 mEditor.commit();
             	
@@ -467,7 +467,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
             			//scrollSpeedValue = (11 - progress) * 10;
 		        		//scrollSpeedtextView_.setText(Integer.toString(progress));
 	            		scrollingKeyFrames_ = progressPlus1;
-		        		mEditor = prefs.edit();
+		        		mEditor = savePrefs.edit();
 		                mEditor.putString("prefScrollSpeed", String.valueOf(progress));
 		                //mEditor.putInt("scrollSpeedKey", progres));
 		                mEditor.commit();
@@ -484,7 +484,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	            		fontSizeValue = progress;
 	            		paint.setTextSize(fontSizeValue);
 	            		
-	            	    mEditor = prefs.edit();
+	            	    mEditor = savePrefs.edit();
 	            		mEditor.putString("fontKey", String.valueOf(rawProgress));
 	            		mEditor.commit();
 	            	    //showToast("font size: " + String.valueOf(fontSizeValue));
@@ -500,7 +500,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	            		//int rawProgress = progress;
 	            		//progress = ((int)Math.round(progress/stepSize))*stepSize + 16;
 	            		yOffset = progress - KIND.height/2; //16 - 32/2 = 0 or 20 - 16 = 4
-	            	    mEditor = prefs.edit();
+	            	    mEditor = savePrefs.edit();
 	            		mEditor.putInt("prefYoffset", progress); 
 	            		mEditor.commit();
 	            		if(scrollingtextTimer_ != null) {
@@ -538,7 +538,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	    String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
 	    if (sharedText != null) {
 	    	textField.setText(sharedText);
-	    	mEditor = prefs.edit();
+	    	mEditor = savePrefs.edit();
             mEditor.putString("scrollingTextKey", textField.getText().toString());
             mEditor.commit();
 	    }
@@ -548,7 +548,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     	if (deviceFound == 1 && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode();
     	ColorWheel = color;
     	//let's save the last color picked so the user doesn't have to re-enter next time they run the app
-    	mEditor = prefs.edit();
+    	mEditor = savePrefs.edit();
  		mEditor.putInt("colorKey", ColorWheel);
  		mEditor.commit();
  		
