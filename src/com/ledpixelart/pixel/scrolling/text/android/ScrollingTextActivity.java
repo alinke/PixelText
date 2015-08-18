@@ -381,7 +381,9 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 
 	    {
 	
-        	if (deviceFound == 1 && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode(); //need to add this as we could have been playing in local mode from writing to the local SD card
+        	if (deviceFound == 1 && pixelHardwareID.substring(0,4).equals("PIXL")) {
+        		pixel.interactiveMode(); //need to add this as we could have been playing in local mode from writing to the local SD card
+        	}
         	
         	int index = arg0.getSelectedItemPosition();
 	
@@ -785,7 +787,9 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
  	        resources.getString(R.string.twitterRefresh),
  	        resources.getString(R.string.twitterRefreshDefault))); 
      
-     if (AutoSelectPanel_ && pixelHardwareID.substring(0,4).equals("PIXL") && !pixelFirmware.substring(4,5).equals("0")) { // PIXL0008 or PIXL0009 is the normal so if it's just a 0 for the 5th character, then we don't go here
+   
+     
+     if (AutoSelectPanel_ && pixelHardwareID.substring(0,4).equals("PIXL") && !pixelHardwareID.substring(4,5).equals("0")) { // PIXL0008 or PIXL0009 is the normal so if it's just a 0 for the 5th character, then we don't go here
 	    	
  	 	//let's first check if we have a matching firmware to auto-select and if not, we'll just go what the matrix from preferences
 	  
@@ -1180,16 +1184,13 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	 
 	 private class IOIOThread extends BaseIOIOLooper {
 			
-		//private RgbLedMatrix ledMatrix;
 		
-		//private Pixel pixel;
-
 		@Override
 		public void setup() throws ConnectionLostException 
 		{
 			try 
 			{
-				matrix_ = ioio_.openRgbLedMatrix(KIND);
+				
 				deviceFound = 1; //set this flag so the pop up doesn't come
 				
 				//**** let's get IOIO version info for the About Screen ****
@@ -1201,29 +1202,40 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 				
 	  			if (!pixelHardwareID.substring(0,4).equals("PIXL"))  //don't show the write button if it's not a PIXEL V2 board
 	  			    hideWriteButton(); //have to do this as runnable or we'll get a crash
-				
-	  			 if (AutoSelectPanel_ && pixelHardwareID.substring(0,4).equals("PIXL") && !pixelHardwareID.substring(4,5).equals("0")) { //only go here if we have a firmware that is set to auto-detect, otherwise we can skip this
+	  			
+	  				 if (AutoSelectPanel_ && pixelHardwareID.substring(0,4).equals("PIXL") && !pixelHardwareID.substring(4,5).equals("0")) { //only go here if we have a firmware that is set to auto-detect, otherwise we can skip this
 	 	  			runOnUiThread(new Runnable() 
 	 	  			{
 	 	  			   public void run() 
 	 	  			   {
 	 	  				  
 	 	  				   updatePrefs();
+	 	  				  
+	 	  				   try { //had to add here or was crashing
+							matrix_ = ioio_.openRgbLedMatrix(KIND);
+						} catch (ConnectionLostException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 	 	  				   
 	 	  				   pixel = new Pixel(matrix_, KIND);
-						 //matrix_ = ioio_.openRgbLedMatrix(KIND);
-	 	  			      
 	 	  			   }
 	 	  			}); 
 	   			}
 	   		   
 	   		   else { //we didn't auto-detect so just go the normal way
+	   			  
+	   			   try { //had to add here or was crashing
+						matrix_ = ioio_.openRgbLedMatrix(KIND);
+					} catch (ConnectionLostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	   			   
 	   			  //matrix_ = ioio_.openRgbLedMatrix(KIND);
 	   			  pixel = new Pixel(matrix_, KIND);
 	   		   }
 	  			
-	  			
-	  			//pixel = new Pixel(matrix_, KIND);
 				System.out.println("PIXEL found, Hardware ID: " + pixelHardwareID);
 				
 				enableUi(true);
