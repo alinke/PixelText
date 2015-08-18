@@ -110,7 +110,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	private ConnectTimer connectTimer; 	
 	private static ScrollingTextTimer scrollingtextTimer_;
 	private twitterTimer twitterTimer_;
-  	private static int deviceFound = 0;
+  	private static boolean deviceFound = false;
   	private boolean noSleep = false;	
 	private int countdownCounter;
 	private static final int countdownDuration = 30;
@@ -381,7 +381,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 
 	    {
 	
-        	if (deviceFound == 1 && pixelHardwareID.substring(0,4).equals("PIXL")) {
+        	if (deviceFound && pixelHardwareID.substring(0,4).equals("PIXL")) {
         		pixel.interactiveMode(); //need to add this as we could have been playing in local mode from writing to the local SD card
         	}
         	
@@ -393,14 +393,16 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	       //setFont is a function below in the code which sets the font based on the position passed
 	        setFont(index);
 	        
-	        if(scrollingtextTimer_ != null) {
+	     /*   if(scrollingtextTimer_ != null) {
        		 	resetScrolling();
-       	 	}
+       	 	}*/
 	        
 	        //let's also save the font for the next time
 	    	mEditor = savePrefs.edit();
             mEditor.putInt("fontPositionKey", index);
             mEditor.commit();
+            
+            if (deviceFound ) resetScrolling();
 	      
 	    }
 
@@ -424,16 +426,18 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     	textField.addTextChangedListener(new TextWatcher(){  //had to add this , without it the text will disappear sometimes when charcters are removed, x becomes higher than the message length
             public void afterTextChanged(Editable s) {
             	
-            	if (deviceFound == 1 && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode(); //need to add this as we could have been playing in local mode from writing to the local SD card
+            	if (deviceFound && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode(); //need to add this as we could have been playing in local mode from writing to the local SD card
             	//now let's save the user's entered scrolling text so the next time the app comes up, they don't have to re-type
             	
-            	if(scrollingtextTimer_ != null) {
+            	/*if(scrollingtextTimer_ != null) {
             		 resetScrolling();
-            	 }
+            	 }*/
             	
             	mEditor = savePrefs.edit();
                 mEditor.putString("scrollingTextKey", textField.getText().toString());
                 mEditor.commit();
+                
+                if (deviceFound ) resetScrolling();
             	
             }
             public void beforeTextChanged(CharSequence s, int start, int count, int after){}
@@ -462,7 +466,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	        	
 	            	if(s == scrollSpeedSeekBar_){
 		            		
-	            		if (deviceFound == 1 && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode();
+	            		if (deviceFound && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode();
             			int progressPlus1 = progress + 1; //because we can't have 0
             			//scrollSpeedValue = (11 - progress) * 10;
 		        		//scrollSpeedtextView_.setText(Integer.toString(progress));
@@ -472,13 +476,17 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 		                //mEditor.putInt("scrollSpeedKey", progres));
 		                mEditor.commit();
 	                
-		                if(scrollingtextTimer_ != null) {
+		                /*if(scrollingtextTimer_ != null) {
 	               		 	resetScrolling();
-	               	 	}
+	               	 	}*/
+		                
+		                if (deviceFound) resetScrolling();
+		                
+		                
 	            	}
 	            	    
 	            	if(s == fontSizeSeekBar_) {
-	            		if (deviceFound == 1 && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode();
+	            		if (deviceFound && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode();
 	            		int rawProgress = progress;
 	            		progress = ((int)Math.round(progress/stepSize))*stepSize + fontSizeStepper;
 	            		fontSizeValue = progress;
@@ -487,25 +495,33 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	            	    mEditor = savePrefs.edit();
 	            		mEditor.putString("fontKey", String.valueOf(rawProgress));
 	            		mEditor.commit();
-	            	    //showToast("font size: " + String.valueOf(fontSizeValue));
-	            		//x=64;
-	            		//x=KIND.width *2 ;
-	            		if(scrollingtextTimer_ != null) {
+	            		
+	            		/*if(scrollingtextTimer_ != null) {
 	               		 	resetScrolling();
-	               	 	}
+	               	 	}*/
+	            		
+	            		 if (deviceFound ) resetScrolling();
+	            		
+	            		
 		            }
 	            	
 	            	if(s == VerticalPositionSeekBar) {
-	            		if (deviceFound == 1 && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode();
+	            		if (deviceFound && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode();
 	            		//int rawProgress = progress;
 	            		//progress = ((int)Math.round(progress/stepSize))*stepSize + 16;
 	            		yOffset = progress - KIND.height/2; //16 - 32/2 = 0 or 20 - 16 = 4
 	            	    mEditor = savePrefs.edit();
 	            		mEditor.putInt("prefYoffset", progress); 
 	            		mEditor.commit();
-	            		if(scrollingtextTimer_ != null) {
+	            		
+	            		/*if(scrollingtextTimer_ != null) {
 	               		 	resetScrolling();
-	               	 	}
+	               	 	}*/
+	            		
+	            		 if (deviceFound) resetScrolling();
+	            		
+	            		
+	            		
 		            }
 	            }
       }
@@ -545,33 +561,63 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     }
     
     public void onColorChanged(int color) {
-    	if (deviceFound == 1 && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode();
+    	if (deviceFound && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode();
     	ColorWheel = color;
     	//let's save the last color picked so the user doesn't have to re-enter next time they run the app
     	mEditor = savePrefs.edit();
  		mEditor.putInt("colorKey", ColorWheel);
  		mEditor.commit();
  		
- 		
- 		
- 		if(scrollingtextTimer_ != null) {
+ 		/*if(scrollingtextTimer_ != null) {
    		 	resetScrolling();
-   	 	}
+   	 	}*/
+ 		
+ 		 if (deviceFound ) resetScrolling();
     	
 	}
 
 	 
     private void resetScrolling() {
-    	//x = 0; //having this works one scrolling sequence but then the next one doesn't come
-    	x=KIND.width *2 ; //like this so the scrolling start at the edge
-	 	scrollingtextTimer_.cancel();
-		paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
-        scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
-    	paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
-    	yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
-		//scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);  //scrollingKeyFrames_
-		scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);  //scrollSpeedValue was changed, we hard code at 100
- 		scrollingtextTimer_.start();
+    	
+    	if (scrollingtextTimer_ != null) {
+    		scrollingtextTimer_.cancel();
+    	}
+    	
+    	
+    	 paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
+         scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
+     	 paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
+     	 yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
+     	 messageWidth = bounds.width(); 
+        // showToast(Integer.toString(messageWidth));
+      	
+       if (messageWidth < KIND.width) { //then it means we don't need to scroll
+       	   
+    	   
+    	   x = 0;
+    	   try {
+					pixel.writeMessageToPixel(x, scrollingText, paint, yCenter);
+				} catch (ConnectionLostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} //let's write the text
+          }
+       
+       else {
+	    	 //x = 0; //having this works one scrolling sequence but then the next one doesn't come
+	       		x=KIND.width *2 ; //like this so the scrolling start at the edge
+	       		//scrollingtextTimer_.cancel();
+	       		paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
+	            scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
+	            paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
+	       		yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
+	    	    scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);
+		 		scrollingtextTimer_.start();
+       }
+    	
+    	
+    	//scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);  //scrollSpeedValue was changed, we hard code at 100
+ 		//scrollingtextTimer_.start();
     }
     
    
@@ -1010,7 +1056,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     
     private  void scrollTextButtonWrite() { //this gets called if the user hit the write button
     	
-    	if (deviceFound == 1) {
+    	if (deviceFound) {
     		scrollText(true);
     	}
     	else {
@@ -1029,13 +1075,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 			if (pixelHardwareID.substring(0,4).equals("PIXL") && writeMode == true) {  //in write mode, we don't need a timer because we don't need a delay in between frames, we will first put PIXEL in write mode and then send all frames at once
 					pixel.interactiveMode();
 					float textFPS = 1000.f / scrollSpeedValue;  //TO DO need to do the math so the scrollig speed is right, need to change this formula
-					
-					//if (KIND.width == 64)  {  //TO DO this is a hack, we have a super pixel and need to put the max FPS, pixel's firmware will automatically go max fps when the frame rate is too high like 500 fps, fix this hack later
-						//pixel.writeMode(500);
-					//}
-					//else {
-						pixel.writeMode(textFPS);
-					//}
+				
+					pixel.writeMode(textFPS);
 						
 					stopTimers(); //stop the twitter timer if it's running	
 					
@@ -1050,27 +1091,45 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	    				 //  ActionListener ScrollingTextTimer = new ActionListener() {
 
 	    	               //     public void actionPerformed(ActionEvent actionEvent) {
-				if(scrollingtextTimer_ != null)
+			   if (scrollingtextTimer_ != null)
 					   scrollingtextTimer_.cancel();
-						 		
-				runOnUiThread(new Runnable() 
-				{
-					public void run() 
-					{
-						
-						paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
-	 	                scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
-	 	            	paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
-	 	            	yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
-						scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);
-						//scrollingtextTimer_ = new ScrollingTextTimer (100000,1);
-				 		scrollingtextTimer_.start();
-					}
-				});
-				
-				
-	    	  
-	    	}    
+	         	 		
+						runOnUiThread(new Runnable() 
+						{
+							public void run() 
+							{	
+			 	            	 
+			 	            	paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
+			 	                scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
+			 	            	paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
+			 	            	yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
+			 	            	messageWidth = bounds.width(); 
+			 	  	            //showToast(Integer.toString(messageWidth));
+			 	            	 
+			 	  	            if (messageWidth < KIND.width) { //then it means we don't need to scroll 
+			 	  	            
+				 	  	            x =0;
+			 	  	            	try {
+				 	 						pixel.writeMessageToPixel(x, scrollingText, paint, yCenter);
+				 	 					} catch (ConnectionLostException e) {
+				 	 						// TODO Auto-generated catch block
+				 	 						e.printStackTrace();
+				 	 					} //let's write the text
+			 	 	           }
+			 	             
+				 	             else {
+									scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);
+							 		scrollingtextTimer_.start();
+				 	             }
+			 	             
+			 	             
+							}
+						});
+			    	}
+			
+		
+			
+			
 	    }
     
 	 
@@ -1132,24 +1191,40 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	  @Override
 	  protected Void doInBackground(Void... params) {
 			
-			while (x >= resetX) {
 			
-				try 
-  	            {	
-  	               
-					pixel.writeMessageToPixel(x, scrollingText, paint,yCenter); //let's write the text
-  	               // x = x - scrollingKeyFrames_ ;  //this wasn't getting the latest so changed to below
-  	                x = x - (scrollSpeedSeekBar_.getProgress() + 1);
-					System.out.println("writing frame" + " " + x);
-					progress_status++;
-				    publishProgress(progress_status);
-  	                
-  	            } 
-  	            catch (ConnectionLostException ex) 
-  	            {
-  	               
-  	            }
-		}
+		  if (messageWidth < KIND.width) { //then it means we don't need to scroll 
+ 	            
+ 	            	x = 0;
+	            	try {
+						pixel.writeMessageToPixel(x, scrollingText, paint, yCenter);
+					} catch (ConnectionLostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} //let's write the text
+           }
+		  
+		  else {
+		  
+		  
+			  while (x >= resetX) {
+			
+						try 
+		  	            {	
+		  	               
+							pixel.writeMessageToPixel(x, scrollingText, paint,yCenter); //let's write the text
+		  	               // x = x - scrollingKeyFrames_ ;  //this wasn't getting the latest so changed to below
+		  	                x = x - (scrollSpeedSeekBar_.getProgress() + 1);
+							System.out.println("writing frame" + " " + x);
+							progress_status++;
+						    publishProgress(progress_status);
+		  	                
+		  	            } 
+		  	            catch (ConnectionLostException ex) 
+		  	            {
+		  	               
+		  	            }
+				}
+		  }
 			 
 	   return null;
 	  }
@@ -1191,7 +1266,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 			try 
 			{
 				
-				deviceFound = 1; //set this flag so the pop up doesn't come
+				deviceFound = true; //set this flag so the pop up doesn't come
 				
 				//**** let's get IOIO version info for the About Screen ****
 	  			pixelFirmware = ioio_.getImplVersion(v.APP_FIRMWARE_VER);
@@ -1289,7 +1364,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
  		@Override
  		public void onFinish()
  			{
- 				if (deviceFound == 0) {
+ 				if (!deviceFound) {
  					showNotFound(); 					
  				}
  				
@@ -1333,6 +1408,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 				} //let's write the text
  	                        
  	            messageWidth = bounds.width(); 
+ 	            //showToast(Integer.toString(messageWidth));
  	            
  	           /* System.out.println("resetX is:" + " " + resetX);
  	            System.out.println("x is:" + " " + x);*/
