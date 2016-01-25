@@ -585,7 +585,9 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     	
     	
     	 paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
-         scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
+         //TO DO fix later
+    	 //scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
+    	 scrollingText = "Add later";
      	 paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
      	 yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
      	 messageWidth = bounds.width(); 
@@ -608,7 +610,10 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	       		x=KIND.width *2 ; //like this so the scrolling start at the edge
 	       		//scrollingtextTimer_.cancel();
 	       		paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
-	            scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
+	            
+	       		//TO DO fix later
+	       		// scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
+	       		scrollingText = "Fix Later";
 	            paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
 	       		yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
 	    	    scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);
