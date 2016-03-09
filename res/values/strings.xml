@@ -87,7 +87,7 @@
     
     
     <string name="bluetooth_pair">Blueooth Pairing</string>
-    <string name="bluetooth_pairSummary">Shortcut to the Bluetooth settings screen. Pair to IOIO using code: 0000</string>
+    <string name="bluetooth_pairSummary">Shortcut to the Bluetooth settings screen. Pair to PIXEL using code: 0000</string>
     
     <string name="slideShowtitle">Slide Show Settings</string>
     <string name="slideShowtitleSummary">Slide Show Settings</string>
@@ -96,7 +96,7 @@
     <string name="slideShowModeDefault">false</string>
     <string name="slideShowModeSummary">Slide Show Mode</string>
     
-    <string name="noSleep">Disable Power Savings</string>    
+    <string name="noSleep">Keep App On</string>    
     <string name="pref_noSleepDefault">false</string>
     <string name="noSleepSummary">Forces the app to be always on, your device will not go into power savings mode while this app is running. Good if using as a Kiosk for example. </string>
     
@@ -145,6 +145,11 @@
     <string name="dimDuringSlideShow">Dim During Slide Show</string>    
     <string name="dimDuringSlideShowDefault">true</string>
     <string name="dimDuringSlideShowSummary">Saves battery life by dimming screen during the Slide Show</string>
+    
+    <string name="displayIncomingSMS">Display Incoming Text Messages</string>    
+    <string name="pref_displayIncomingSMS">pref_displayIncomingSMS</string>
+    <string name="displayIncomingSMSDefault">false</string>
+    <string name="displayIncomingSMSSummary">Display the actual text for incoming text messages</string>
     
     <style name="ButtonText">
     <item name="android:layout_width">fill_parent</item>

@@ -30,6 +30,12 @@
     android:defaultValue="@string/pref_scanAll_default"
     android:summary="@string/scanAllSummary"/>-->
     
+     <CheckBoxPreference
+    android:title="@string/displayIncomingSMS"
+    android:key="pref_displayIncomingSMS"
+    android:defaultValue="@string/displayIncomingSMSDefault"
+    android:summary="@string/displayIncomingSMSSummary"/> 
+    
       <ListPreference
     android:key="@string/selected_matrix"
     android:title="@string/matrix"

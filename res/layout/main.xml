@@ -39,16 +39,22 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content" />
 
+	 <!--
+	
 	<TextView
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:text="Vertial Position: (Left moves text up and right moves down)" />
 
+	
+	
 	<SeekBar
 	    android:id="@+id/VerticalBar"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:progress="4" />
+	    
+	    -->
 
 	<LinearLayout
 		android:layout_width="wrap_content"
@@ -85,7 +91,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
  
-    <com.larswerkman.holocolorpicker.SVBar
+    <!--
+	  
+	  <com.larswerkman.holocolorpicker.SVBar
         android:id="@+id/svbar"
         android:layout_width="322dp"
         android:layout_height="112dp"
@@ -98,6 +106,8 @@
         android:layout_height="112dp"
         android:layout_gravity="center"
         android:layout_margin="8dip"/>
+        
+        -->
  
     <LinearLayout
         android:layout_width="match_parent"

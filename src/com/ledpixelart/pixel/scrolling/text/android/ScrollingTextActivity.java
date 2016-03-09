@@ -2,23 +2,23 @@
 package com.ledpixelart.pixel.scrolling.text.android;
 
 
-import ioio.lib.api.AnalogInput;
+//import ioio.lib.api.AnalogInput;
 import ioio.lib.api.IOIO.VersionType;
-import ioio.lib.api.RgbLedMatrix;
+//import ioio.lib.api.RgbLedMatrix;
 import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.BaseIOIOLooper;
 import ioio.lib.util.IOIOLooper;
 import ioio.lib.util.android.IOIOActivity;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+//import java.io.File;
+//import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
+//import java.io.RandomAccessFile;
 import java.util.Arrays;
 import java.util.Timer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -29,7 +29,7 @@ import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 import alt.android.os.CountDownTimer;
 import android.annotation.SuppressLint;
-import android.app.Activity;
+//import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -38,7 +38,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
-import android.database.Cursor;
+//import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -55,7 +55,7 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Display;
+//import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -73,21 +73,15 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
+//import android.widget.ToggleButton;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.larswerkman.holocolorpicker.ColorPicker.OnColorChangedListener;
-import com.larswerkman.holocolorpicker.OpacityBar;
-import com.larswerkman.holocolorpicker.SVBar;
+//import com.larswerkman.holocolorpicker.OpacityBar;
+//import com.larswerkman.holocolorpicker.SVBar;
 import com.ledpixelart.pixel.hardware.Pixel;
-/*
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-*/
+
 
 @SuppressLint("ParserError")
 public class ScrollingTextActivity extends IOIOActivity implements OnColorChangedListener 
@@ -97,128 +91,131 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	private SeekBar scrollSpeedSeekBar_;	
 	private SeekBar fontSizeSeekBar_;	
 	//private ToggleButton toggleButton_;	
-	private static EditText textField;	
-	private SharedPreferences prefs;
+	public static EditText textField;	  //this has to be static or we'll get a crash
+	private SharedPreferences prefs; //keep this
 	private SharedPreferences savePrefs;
 	private Editor mEditor;
 	private Resources resources;
 	private String app_ver;	
 	private int matrix_model;
 	private final String tag = "";	
-	private final String LOG_TAG = "PixelText";
-	private static int resizedFlag = 0;
+	//private final String LOG_TAG = "PixelText";
+	//private int resizedFlag = 0;
 	private ConnectTimer connectTimer; 	
-	private static ScrollingTextTimer scrollingtextTimer_;
+	private  ScrollingTextTimer scrollingtextTimer_;
 	private twitterTimer twitterTimer_;
-  	private static boolean deviceFound = false;
+  	private boolean deviceFound = false;
   	private boolean noSleep = false;	
-	private int countdownCounter;
-	private static final int countdownDuration = 30;
-	private int scrollSpeed = 1;
+	//private int countdownCounter;
+	//private static final int countdownDuration = 30;
+	//private int scrollSpeed = 1;
 	
-	private static ioio.lib.api.RgbLedMatrix matrix_;
-	private static ioio.lib.api.RgbLedMatrix.Matrix KIND;  //have to do it this way because there is a matrix library conflict
-	private static android.graphics.Matrix matrix2;
-	private static short[] frame_;
-  	public static final Bitmap.Config FAST_BITMAP_CONFIG = Bitmap.Config.RGB_565;
-  	private static byte[] BitmapBytes;
-  	private static InputStream BitmapInputStream;
-  	private static Bitmap canvasBitmap;
-  	private static Bitmap IOIOBitmap;
-  	private static Bitmap originalImage;
-  	private static int width_original;
-  	private static int height_original; 	  
-  	private static float scaleWidth; 
-  	private static float scaleHeight; 	  	
-  	private static Bitmap resizedBitmap; 
-	private Canvas canvas;
-	private static Canvas canvasIOIO;
+	private  ioio.lib.api.RgbLedMatrix matrix_;
+	private  ioio.lib.api.RgbLedMatrix.Matrix KIND;  //have to do it this way because there is a matrix library conflict
+	//private  android.graphics.Matrix matrix2;
+	private  short[] frame_;
+  	public  final Bitmap.Config FAST_BITMAP_CONFIG = Bitmap.Config.RGB_565;
+  	private  byte[] BitmapBytes;
+  	private  InputStream BitmapInputStream;
+  	//private  Bitmap canvasBitmap;
+  	//private  Bitmap IOIOBitmap;
+  	//private  Bitmap originalImage;
+  	//private  int width_original;
+  	//private  int height_original; 	  
+  	//private  float scaleWidth; 
+  	//private  float scaleHeight; 	  	
+  	//private  Bitmap resizedBitmap; 
+	//private Canvas canvas;
+	//private static Canvas canvasIOIO;
 	
-	private String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
-    private String basepath = extStorageDirectory;
-    private static Context context;
-    private Context frameContext;
-	private boolean debug_;
-	private static int appAlreadyStarted = 0;
+	//private String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
+    //private String basepath = extStorageDirectory;
+    private static Context context; //keep
+   // private Context frameContext;
+	public static boolean debug_;
+	private static int appAlreadyStarted = 0; //keep
 	//private int scrollSpeedProgress = 1;
 	private static int scrollSpeedValue = 100;
 	private int fontSizeValue = 26;
 	
 	private ColorPicker picker;
-	private SVBar svBar;
-	private OpacityBar opacityBar;
+	//private SVBar svBar;
+	//private OpacityBar opacityBar;
 	private Button button;
 	private Button writeButton_;
 	private TextView text;
-	private RadioButton speedRadio1;
-	private RadioButton speedRadio2;
-	private RadioButton speedRadio3;
-	private RadioButton speedRadio4;
-	private RadioGroup speedRadioGroup_;
+	
 	private SeekBar VerticalPositionSeekBar;
 	private Spinner fontSpinner;
 	
-	private static int ColorWheel;
-	private static Paint paint;
-	private Typeface tf;
-	private static String scrollingText; //used for scrolling text
-	private static Rect bounds;
-	private static int resetX;
-	private static int messageWidth;
-	private static int x  = 0;	
+	private  int ColorWheel;
+	private  Paint paint;
+	//private Typeface tf;
+	public  String scrollingText; //used for scrolling text
+	private  Rect bounds;
+	private  int resetX;
+	private  int messageWidth;
+	private  int x  = 0;	
 	private int stepSize = 6;
 	private String prefFontSize;
 	private int prefColor;
 	private String prefScrollingText;
 	
 	private Typeface selectedFont;
-	private String fontlist[];
+	private String fontlist[]; //keep
 	private int prefFontPosition;
 	public long frame_length;
-	private static int currentResolution;
-	private static String pixelFirmware = "Not Connected";
-	private static String pixelBootloader = "Not Connected";
-	private static String pixelHardwareID = "Not Connected";
-	private static String IOIOLibVersion = "Not Connected";
-	private static VersionType v;
-    private volatile static Timer timer;
-    private static Pixel pixel;
-    //private RgbLedMatrix ledMatrix;
-    private static int scrollingKeyFrames_ = 1;
-	private static final int REQUEST_PAIR_DEVICE = 10;
+	//private  int currentResolution;
+	private  String pixelFirmware = "Not Connected";
+	private  String pixelBootloader = "Not Connected";
+	private  String pixelHardwareID = "Not Connected";
+	private  String IOIOLibVersion = "Not Connected";
+	private  VersionType v;
+    //private volatile static Timer timer;
+    private  Pixel pixel;
+    private  int scrollingKeyFrames_ = 1; //keep
+	private  final int REQUEST_PAIR_DEVICE = 10;
 	private  ProgressDialog progress;
-	private int yCenter;  //TO DO this center doesn't work all the time, add a way for the user to override up or down
-	private static final int WENT_TO_PREFERENCES = 1;
-	private int prefYoffset_;
-	private int yOffset = 0;
+	private  int yCenter;  //TO DO this center doesn't work all the time, add a way for the user to override up or down
+	private  final int WENT_TO_PREFERENCES = 1;
+	//private int prefYoffset_;
+	//private int yOffset = 0;
 	private String prefScrollSpeed_;
 	private int fontSizeStepper = 8;
 	
-	private static Twitter twitter;
+	private  Twitter twitter;
 	    
-	private static TwitterFactory twitterFactory;
+	private  TwitterFactory twitterFactory;
 	    
-	private static Query query;
+	private  Query query;
 	    
-	private static QueryResult result = null;
+	private  QueryResult result = null;
 	    
-    private Status status;
+    //private Status status;
     
-    private String lastTweet;
+    //private String lastTweet;
     
-    private Integer tweetCount = 0;
+    //private Integer tweetCount = 0;
     
-    private static boolean filterTweets = true;
+    private  boolean filterTweets = true;
     
     private String twitterSearchString = "cats";
     
-    private static boolean twitterMode = false;
+    private  boolean twitterMode = false;
 	
-	private static int twitterInterval = 60; //in seconds
+	private  int twitterInterval = 60; //in seconds
 	
-	private static String twitterResult = null;
+	private  String twitterResult = null;
 	
 	private boolean AutoSelectPanel_ = true;
+	
+	//private boolean incomingCall_ = false;
+    public  static boolean incomingSMS_ = false;
+    public  static boolean displayIncomingSMS_ = false;
+    //private boolean displayClock_ = false;
+    //private boolean incomingPhoneCall = false;
+    //private boolean incomingSMS = false;
+	
 
     @Override
     public void onCreate(Bundle savedInstanceState) 
@@ -253,8 +250,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         prefFontSize = savePrefs.getString("fontKey", "14");
        // prefYoffset_ = prefs.getInt("prefYoffset", KIND.height/2); //default to in the middle
         
-        prefYoffset_ = savePrefs.getInt("prefYoffset", KIND.height/2); //default to in the middle
-        yOffset = prefYoffset_ - KIND.height/2; //16 - 32/2 = 0 or 20 - 16 = 4
+        //prefYoffset_ = savePrefs.getInt("prefYoffset", KIND.height/2); //default to in the middle
+        //yOffset = prefYoffset_ - KIND.height/2; //16 - 32/2 = 0 or 20 - 16 = 4
         
         prefScrollSpeed_ = savePrefs.getString("prefScrollSpeed", "1");
         prefScrollingText = savePrefs.getString("scrollingTextKey","TYPE TEXT HERE");
@@ -265,20 +262,20 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
        
         
         picker = (ColorPicker) findViewById(R.id.picker);
-		svBar = (SVBar) findViewById(R.id.svbar);
-		opacityBar = (OpacityBar) findViewById(R.id.opacitybar);
+		//svBar = (SVBar) findViewById(R.id.svbar);
+		//opacityBar = (OpacityBar) findViewById(R.id.opacitybar);
 		button = (Button) findViewById(R.id.button1);
 		writeButton_ = (Button) findViewById(R.id.writeButton);
 		text = (TextView) findViewById(R.id.textView1);
 		
-		picker.addSVBar(svBar);
-		picker.addOpacityBar(opacityBar);
+		//picker.addSVBar(svBar);
+		//picker.addOpacityBar(opacityBar);
 		picker.setOnColorChangedListener(this);
 		
-		VerticalPositionSeekBar = (SeekBar)findViewById(R.id.VerticalBar);
+		/*VerticalPositionSeekBar = (SeekBar)findViewById(R.id.VerticalBar);
 	    VerticalPositionSeekBar.setMax(KIND.height); //maximum for y offset is 32 for pixel and 64 for super pixel 
 	    VerticalPositionSeekBar.setProgress(prefYoffset_); //start in the middle
-	    
+*/	    
 		if (isNetworkAvailable()) {
 	    
 		    ConfigurationBuilder cb = new ConfigurationBuilder();
@@ -293,7 +290,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 		}
 	   	
 	   
-	    VerticalPositionSeekBar.setOnSeekBarChangeListener(OnSeekBarProgress);
+	   // VerticalPositionSeekBar.setOnSeekBarChangeListener(OnSeekBarProgress);
 		
 		button.setOnClickListener(new OnClickListener() {
 			
@@ -505,7 +502,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	            		
 		            }
 	            	
-	            	if(s == VerticalPositionSeekBar) {
+	            /*	if(s == VerticalPositionSeekBar) { // no longer need this as we have auto vertical center now
 	            		if (deviceFound && pixelHardwareID.substring(0,4).equals("PIXL")) pixel.interactiveMode();
 	            		//int rawProgress = progress;
 	            		//progress = ((int)Math.round(progress/stepSize))*stepSize + 16;
@@ -514,15 +511,13 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	            		mEditor.putInt("prefYoffset", progress); 
 	            		mEditor.commit();
 	            		
-	            		/*if(scrollingtextTimer_ != null) {
+	            		if(scrollingtextTimer_ != null) {
 	               		 	resetScrolling();
-	               	 	}*/
+	               	 	}
 	            		
 	            		 if (deviceFound) resetScrolling();
-	            		
-	            		
-	            		
-		            }
+		            }*/
+	            	
 	            }
       }
         	
@@ -545,7 +540,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
     
-    private  void stopTimers() {
+    private   void stopTimers() {
     	if (twitterTimer_ != null) twitterTimer_.cancel();
     }
     
@@ -586,10 +581,11 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     	
     	 paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
          //TO DO fix later
-    	 //scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
-    	 scrollingText = "Add later";
+    	 scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
+    	 //scrollingText = "Add later";
      	 paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
-     	 yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
+     	 //yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
+     	 yCenter = (KIND.height/2 + Math.abs(bounds.height())/2) - Math.abs(bounds.bottom);
      	 messageWidth = bounds.width(); 
         // showToast(Integer.toString(messageWidth));
       	
@@ -613,9 +609,10 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	            
 	       		//TO DO fix later
 	       		// scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
-	       		scrollingText = "Fix Later";
+	       		//scrollingText = "Fix Later";
 	            paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
-	       		yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
+	       		//yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
+	       		yCenter = (KIND.height/2 + Math.abs(bounds.height())/2) - Math.abs(bounds.bottom);
 	    	    scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);
 		 		scrollingtextTimer_.start();
        }
@@ -817,6 +814,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
      noSleep = prefs.getBoolean("pref_noSleep", false);
      debug_ = prefs.getBoolean("pref_debugMode", false);
      
+     displayIncomingSMS_ = prefs.getBoolean("pref_displayIncomingSMS", false);
+     
      scrollingKeyFrames_ = Integer.valueOf(prefs.getString(   //how smooth the scrolling, essentially the keyframes
  	        resources.getString(R.string.scrollingKeyFrames),
  	        resources.getString(R.string.scrollingKeyFramesDefault))); 
@@ -849,62 +848,62 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
  	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32;
 		    	BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
 		    	frame_length = 2048;
-		    	currentResolution = 32; 
+		    	//currentResolution = 32; 
  	 	}
  	 	else if (pixelHardwareID.substring(4,5).equals("T")) {
  	 		matrix_model = 14;
  	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x64;
 		    	BitmapInputStream = getResources().openRawResource(R.raw.select64by64);
 		    	frame_length = 8192;
-		    	currentResolution = 128; 
+		    	//currentResolution = 128; 
  	 	}
  	 	else if (pixelHardwareID.substring(4,5).equals("I")) {
  	 		matrix_model = 1; 
  	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x16;
 		    	BitmapInputStream = getResources().openRawResource(R.raw.selectimage16);
 		    	frame_length = 1024;
-		    	currentResolution = 16;
+		    	//currentResolution = 16;
  	 	}
  	 	else if (pixelHardwareID.substring(4,5).equals("L")) { //low power
  	 		matrix_model = 1; 
  	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x16;
 		    	BitmapInputStream = getResources().openRawResource(R.raw.selectimage16);
 		    	frame_length = 1024;
-		    	currentResolution = 16;
+		    	//currentResolution = 16;
  	 	}
  	 	else if (pixelHardwareID.substring(4,5).equals("C")) {
  	 		matrix_model = 12; 
  	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32_ColorSwap;
 		    	BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
 		    	frame_length = 2048;
-		    	currentResolution = 32; 
+		    	//currentResolution = 32; 
  	 	}
  	 	else if (pixelHardwareID.substring(4,5).equals("R")) {
  	 		matrix_model = 13; 
  	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x32;
 		    	BitmapInputStream = getResources().openRawResource(R.raw.select64by32);
 		    	frame_length = 4096;
-		    	currentResolution = 64; 
+		    	//currentResolution = 64; 
  	 	}
  	 	else if (pixelHardwareID.substring(4,5).equals("M")) { //low power
  	 		 matrix_model = 3;
  	 		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //pixel v2
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
 		    	 frame_length = 2048;
-		    	 currentResolution = 32;
+		    	 //currentResolution = 32;
  	 	}
  	 	else if (pixelHardwareID.substring(4,5).equals("N")) { //low power
  	 		 matrix_model = 11;
  	 		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32; //pixel v2.5
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
 		    	 frame_length = 2048;
-		    	 currentResolution = 32; 
+		    	 //currentResolution = 32; 
  	 	}
  	 	else {  //in theory, we should never go here
  	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32;
 		    	BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
 		    	frame_length = 2048;
-		    	currentResolution = 32; 
+		    	//currentResolution = 32; 
  	 	}
 		}	
 
@@ -914,115 +913,115 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x16;
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage16);
 		    	 frame_length = 1024;
-		    	 currentResolution = 16;
+		    	 //currentResolution = 16;
 		    	 break;
 		     case 1:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x16;
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage16);
 		    	 frame_length = 1024;
-		    	 currentResolution = 16;
+		    	 //currentResolution = 16;
 		    	 break;
 		     case 2:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32_NEW; //v1, this matrix was never used
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
 		    	 frame_length = 2048;
-		    	 currentResolution = 32;
+		    	 //currentResolution = 32;
 		    	 break;
 		     case 3:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
 		    	 frame_length = 2048;
-		    	 currentResolution = 32;
+		    	 //currentResolution = 32;
 		    	 break;
 		     case 4:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x32; 
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.select64by32);
 		    	 frame_length = 8192;
-		    	 currentResolution = 64; 
+		    	 //currentResolution = 64; 
 		    	 break;
 		     case 5:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x64; 
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by64);
 		    	 frame_length = 8192;
-		    	 currentResolution = 64; 
+		    	 //currentResolution = 64; 
 		    	 break;	 
 		     case 6:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_2_MIRRORED; 
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by64);
 		    	 frame_length = 8192;
-		    	 currentResolution = 64; 
+		    	 //currentResolution = 64; 
 		    	 break;	 	 
 		     case 7: //this one doesn't work and we don't use it rigth now
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_4_MIRRORED;
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by64);
 		    	 frame_length = 8192; //original 8192
-		    	 currentResolution = 128; //original 128
+		    	 //currentResolution = 128; //original 128
 		    	 break;
 		     case 8:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_128x32; //horizontal
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.select128by32);
 		    	 frame_length = 8192;
-		    	 currentResolution = 128;  
+		    	 //currentResolution = 128;  
 		    	 break;	 
 		     case 9:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x128; //vertical mount
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by128);
 		    	 frame_length = 8192;
-		    	 currentResolution = 128; 
+		    	 //currentResolution = 128; 
 		    	 break;	 
 		     case 10:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x64;
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.select64by64);
 		    	 frame_length = 8192;
-		    	 currentResolution = 128; 
+		    	 //currentResolution = 128; 
 		    	 break;
 		     case 11:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32;
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
 		    	 frame_length = 2048;
-		    	 currentResolution = 32; 
+		    	 //currentResolution = 32; 
 		    	 break;	 
 		     case 12:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32_ColorSwap;
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
 		    	 frame_length = 2048;
-		    	 currentResolution = 32; 
+		    	 //currentResolution = 32; 
 		    	 break;	 	 
 		     case 13:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x32;
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.select64by32);
 		    	 frame_length = 4096;
-		    	 currentResolution = 64; 
+		    	 //currentResolution = 64; 
 		    	 break;	
 		     case 14:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x64;
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.select64by64);
 		    	 frame_length = 8192;
-		    	 currentResolution = 128; 
+		    	 //currentResolution = 128; 
 		    	 break;
 		     case 15:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_128x32;
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.select128by32);
 		    	 frame_length = 8192;
-		    	 currentResolution = 128; 
+		    	 //currentResolution = 128; 
 		    	 break;	 	 	
 		     case 16:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x128;
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.select32by128);
 		    	 frame_length = 8192;
-		    	 currentResolution = 128; 
+		    	 //currentResolution = 128; 
 		    	 break;	 
 		     case 17:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x16;
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
 		    	 frame_length = 2048;
-		    	 currentResolution = 32; 
+		    	 //currentResolution = 32; 
 		    	 break;	 	 	
 		     default:	    		 
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2 as the default
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
 		    	 frame_length = 2048;
-		    	 currentResolution = 32;
+		    	 //currentResolution = 32;
 		     }
  	 }
       
@@ -1069,9 +1068,21 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     	}
     }
     
-	private void scrollText(boolean writeMode) 
+   /* public static  void incomingSMSAnimation() {
+   	 decodedDirPath = GIFSystemPath + "decoded";
+   	 gifPath_ = GIFSystemPath;
+   	 //imagePath = gifPath_ + "gifsource/" + filename_no_extension + ".gif";
+   	 imagePath = gifPath_ + "sms16" + ".gif";
+		 gifView.setGif(imagePath);  //just sets the image , no decoding, decoding happens in the animateafterdecode method
+		 Log.d(TAG, imagePath);
+		 animateIncoming("sms16");
+   }*/
+    
+	public  void scrollText(boolean writeMode) 
 	 
-	    {
+	    
+	
+		{
 		   if(scrollingtextTimer_ != null)
 			   scrollingtextTimer_.cancel();
 		
@@ -1085,6 +1096,30 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 						
 					stopTimers(); //stop the twitter timer if it's running	
 					
+				/*	MainActivity myActivity = new MainActivity();  //had to add this due to some java requirement	
+		    		
+    				try {
+						matrix_.interactive();
+					} catch (ConnectionLostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} //put PIXEL back in interactive mode, can't forget to do that! or we'll just be playing local animations
+    				decodedtimer = myActivity.new DecodedTimer(300000,selectedFileDelay);*/
+					
+				//	ScrollingTextActivity myScrollingActivity = new ScrollingTextActivity();
+					
+				/*	MainActivity myActivity = new MainActivity();
+					MainActivity.parseYouTubeAndYahoo asyncTask = myActivity.new parseYouTubeAndYahoo();
+					
+					writePixelAsync loadApplication = new myScrollingActivity.writePixelAsync();
+	    			loadApplication.execute();*/
+					
+					//OuterClass.StaticNestedClass nestedObject =
+						//     new OuterClass.StaticNestedClass();
+					
+					//writePixelAsync loadApplication = new writePixelAsync();
+	    			//loadApplication.execute();
+	    			
 					writePixelAsync loadApplication = new writePixelAsync();
 	    			loadApplication.execute();
 			}
@@ -1097,7 +1132,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 
 	    	               //     public void actionPerformed(ActionEvent actionEvent) {
 			   if (scrollingtextTimer_ != null)
-					   scrollingtextTimer_.cancel();
+				   scrollingtextTimer_.cancel();
 	         	 		
 						runOnUiThread(new Runnable() 
 						{
@@ -1107,7 +1142,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 			 	            	paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
 			 	                scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
 			 	            	paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
-			 	            	yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
+			 	            	//yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
+			 	            	yCenter = (KIND.height/2 + Math.abs(bounds.height())/2) - Math.abs(bounds.bottom);
 			 	            	messageWidth = bounds.width(); 
 			 	  	            //showToast(Integer.toString(messageWidth));
 			 	            	 
@@ -1123,8 +1159,23 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 			 	 	           }
 			 	             
 				 	             else {
-									scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);
-							 		scrollingtextTimer_.start();
+									
+				 	            	
+				 	            	/*MainActivity myActivity = new MainActivity();  //had to add this due to some java requirement	
+						    		
+				    				try {
+										matrix_.interactive();
+									} catch (ConnectionLostException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									} //put PIXEL back in interactive mode, can't forget to do that! or we'll just be playing local animations
+				    				decodedtimer = myActivity.new DecodedTimer(300000,selectedFileDelay);  //stream mode
+									decodedtimer.start();
+									StreamModePlaying = 1; //our isStreamModePlaying flag	 
+				 	            	 */
+				 	            	 
+				 	            	scrollingtextTimer_ = new ScrollingTextTimer (100000,scrollSpeedValue);
+									scrollingtextTimer_.start();
 				 	             }
 			 	             
 			 	             
@@ -1132,14 +1183,11 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 						});
 			    	}
 			
-		
-			
-			
 	    }
     
 	 
 	 
-	 private static void loadRGB565() {
+	 private  void loadRGB565() {
 	 	   
 		try {
    			int n = BitmapInputStream.read(BitmapBytes, 0, BitmapBytes.length); // reads
@@ -1175,7 +1223,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	  	paint.setColor(ColorWheel); //let's get the color the user has specified from the color wheel widget
         scrollingText = textField.getText().toString(); //let's get the text the user has mentioned
       	paint.getTextBounds(scrollingText, 0, scrollingText.length(), bounds);
-      	yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
+      	//yCenter = (KIND.height / 2) + ((bounds.height())/2 + yOffset);
+      	yCenter = (KIND.height/2 + Math.abs(bounds.height())/2) - Math.abs(bounds.bottom);
 		
 		messageWidth = bounds.width();        
 	        System.out.println("message width in write mode" + " " + messageWidth);
@@ -1463,7 +1512,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 		alert.setTitle(getResources().getString(R.string.notFoundString)).setIcon(R.drawable.icon).setMessage(getResources().getString(R.string.bluetoothPairingString)).setNeutralButton(getResources().getString(R.string.OKText), null).show();	
   }
 	
-	private void setText(final String str) 
+	public void setText(final String str) 
 	{
 		runOnUiThread(new Runnable() 
 		{
