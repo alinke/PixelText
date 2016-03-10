@@ -215,6 +215,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     //private boolean displayClock_ = false;
     //private boolean incomingPhoneCall = false;
     //private boolean incomingSMS = false;
+    private boolean isAppInBackground = false;
 	
 
     @Override
@@ -227,7 +228,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     	
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
+        isAppInBackground = false;  //we had to add this flag because if the user exits the app, the show not found timer is still running or I guess we could have killed the timer on onstop too
        
         try
 	        {
@@ -1058,6 +1059,28 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
      
     }
     
+    @Override
+    protected void onStop() {
+    	super.onStop();
+    	
+    	if(connectTimer != null) {
+    		connectTimer.cancel();
+    		connectTimer = null;
+        }
+    	
+    	isAppInBackground = true;
+    	
+    	
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	isAppInBackground = false;
+    }
+    
+
+    
     private  void scrollTextButtonWrite() { //this gets called if the user hit the write button
     	
     	if (deviceFound) {
@@ -1508,8 +1531,13 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 	 
   
   private void showNotFound() {	
-		AlertDialog.Builder alert=new AlertDialog.Builder(this);
-		alert.setTitle(getResources().getString(R.string.notFoundString)).setIcon(R.drawable.icon).setMessage(getResources().getString(R.string.bluetoothPairingString)).setNeutralButton(getResources().getString(R.string.OKText), null).show();	
+	  
+	    if (isAppInBackground == true) { //added this to prevent a crash, if app is in the background, then don't show this
+	    	AlertDialog.Builder alert=new AlertDialog.Builder(this);
+	 		alert.setTitle(getResources().getString(R.string.notFoundString)).setIcon(R.drawable.icon).setMessage(getResources().getString(R.string.bluetoothPairingString)).setNeutralButton(getResources().getString(R.string.OKText), null).show();	
+	     }
+	  
+	   
   }
 	
 	public void setText(final String str) 
