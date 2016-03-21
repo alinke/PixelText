@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.ledpixelart.pixel.scrolling.text.android" android:versionCode="22" android:versionName="5.9">
+      package="com.ledpixelart.pixel.scrolling.text.android" android:versionCode="23" android:versionName="6.0">
       
       
       <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="11"/>
       
       <uses-permission android:name="android.permission.BLUETOOTH" android:required="false" />
+      <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
       <uses-permission android:name="android.permission.INTERNET" android:required="false" />
       <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" android:required="false" />
       <uses-permission android:name="android.permission.RECEIVE_SMS" android:required="false" />

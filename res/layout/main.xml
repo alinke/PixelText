@@ -83,7 +83,7 @@
 
 	
 	
-	   <Button android:text="WRITE" android:id="@+id/writeButton" android:background="@drawable/red_btn_selector" style="@style/ButtonText"></Button>
+	     <Button android:text="WRITE" android:id="@+id/writeButton" android:background="@drawable/red_btn_selector" style="@style/ButtonText"></Button>
 
 	  <com.larswerkman.holocolorpicker.ColorPicker
         android:id="@+id/picker"
