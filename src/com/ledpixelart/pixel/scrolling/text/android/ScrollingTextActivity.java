@@ -832,6 +832,8 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
      
      twitterMode = prefs.getBoolean("pref_twitterMode", false);
      
+     AutoSelectPanel_ = prefs.getBoolean("pref_AutoSelectPanel", true);
+     
      filterTweets = prefs.getBoolean("pref_twitterFilter", true);
      
      twitterInterval = Integer.valueOf(prefs.getString(   //the selected RGB LED Matrix Type
@@ -900,6 +902,14 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 		    	 frame_length = 2048;
 		    	 //currentResolution = 32; 
  	 	}
+	  		
+ 		else if (pixelHardwareID.substring(4,5).equals("Z")) {                    //then we have a pixel frame that is ios compatible that only supports adafruit 32x32 panel
+	 		matrix_model = 11;
+	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32;
+	    	BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+	    	frame_length = 2048;
+	 	}
+	  		
  	 	else {  //in theory, we should never go here
  	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32;
 		    	BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
@@ -1017,14 +1027,51 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
 		    	 frame_length = 2048;
 		    	 //currentResolution = 32; 
-		    	 break;	 	 	
+		    	 break;	 	 
+		     case 18:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x32_ColorSwap;
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.select64by32);
+		    	 frame_length = 4096;
+		    	 //currentResolution = 64; 
+		    	 break;	
+		     case 19:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x64_ColorSwap;
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.select64by64);
+		    	 frame_length = 8192;
+		    	 //currentResolution = 128; 
+		    	 break;
+		     case 20:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32_ColorSwap;
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+		    	 frame_length = 2048;
+		    	 //currentResolution = 32;
+		    	 break;
+		     case 21:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ALIEXPRESS_RANDOM1_32x32;
+		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+		    	 frame_length = 2048;
+		    	 //currentResolution = 32;
+		    	 break;	 	 
 		     default:	    		 
-		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2 as the default
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32; //v2 as the default
 		    	 BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
 		    	 frame_length = 2048;
 		    	 //currentResolution = 32;
 		     }
  	 }
+     
+     if (pixelHardwareID.substring(4,5).equals("Z") && AutoSelectPanel_ == false && matrix_model != 11) { //we have an ios pixel frame and the user has picked a non supported led panel
+	 		//if it's an ios pixel, only 32x32 is supported so we'll just set it here and be done with it, doesn't matter if auto-select or anything else is selected
+	 		
+	 		AlertDialog.Builder alert=new AlertDialog.Builder(this);
+			alert.setTitle(getResources().getString(R.string.unsupportedPanelPixeliOS)).setIcon(R.drawable.icon).setMessage(getResources().getString(R.string.unsupportedPanelPixeliOSMsg)).setNeutralButton(getResources().getString(R.string.OKText), null).show();
+			
+			//set the right panel
+	 		matrix_model = 11;
+	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32;
+	    	BitmapInputStream = getResources().openRawResource(R.raw.selectimage32);
+	    	frame_length = 2048;
+		}
       
      frame_ = new short [KIND.width * KIND.height];
 	 BitmapBytes = new byte[KIND.width * KIND.height *2]; //512 * 2 = 1024 or 1024 * 2 = 2048

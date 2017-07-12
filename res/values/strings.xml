@@ -20,6 +20,13 @@
    <string name="oneTimeSetupString">One Time Setup: Copying stock images to your SD card.</string> 
    <string name="bluetoothPairingString">Please ensure Bluetooth pairing has been completed prior. The Bluetooth pairing code is: 0000."</string> 
     
+    <string name="unsupportedPanel">Incompatible LED Panel</string>    
+    <string name="unsupportedPanelMsg">Very Sorry&#8230;\n\nThe LED Panel you have selected is not compatible with your PIXEL board.\n\nYou would need to upgrade to a PIXEL v2.5 or higher board to support this LED panel\n\nPlease now change the LED panel to a supported one.</string>
+    
+    <string name="unsupportedPanelPixeliOS">Incompatible LED Panel</string>    
+    <string name="unsupportedPanelPixeliOSMsg">Very Sorry&#8230;\n\nThe LED Panel you have selected is not compatible with your PIXEL board firmware.\n\nIf you need to support a different LED panel, then you will need to change your firmware to the Android only firmware from ledpixelart.com.\n\n Please turn Auto Select PIXEL back on in Settings...</string>
+    
+  
    
    <string name="menu_instructions_title">Instructions</string>
    <string name="setupInstructionsString">Pair your Android device to PIXEL which will show up as \'PIXEL\' in Bluetooth using code 0000</string>
@@ -41,7 +48,7 @@
     <string name="matrix">PIXEL Model</string>
     <string name="matrixSummary">Select PIXEL / LED Panel Model</string>    
     <string name="dialogTitleMatrix">PIXEL Model</string>
-    <string name="matrix_default_value">3</string>   
+    <string name="matrix_default_value">11</string>   
     
     <string name="twitterRefresh">twitterRefresh</string>
     <string name="twitterRefreshTitle">Twitter refresh interval</string>
