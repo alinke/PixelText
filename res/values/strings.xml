@@ -29,7 +29,7 @@
   
    
    <string name="menu_instructions_title">Instructions</string>
-   <string name="setupInstructionsString">Pair your Android device to PIXEL which will show up as \'PIXEL\' in Bluetooth using code 0000</string>
+   <string name="setupInstructionsString">Bluetooth pair to PIXEL using code 0000</string>
    <string name="setupInstructionsStringTitle">Instructions</string>   
     
      
@@ -156,7 +156,7 @@
     <string name="displayIncomingSMS">Display Incoming Text Messages</string>    
     <string name="pref_displayIncomingSMS">pref_displayIncomingSMS</string>
     <string name="displayIncomingSMSDefault">false</string>
-    <string name="displayIncomingSMSSummary">Display the actual text for incoming text messages</string>
+    <string name="displayIncomingSMSSummary">Scroll text on incoming text messages</string>
     
     <style name="ButtonText">
     <item name="android:layout_width">fill_parent</item>

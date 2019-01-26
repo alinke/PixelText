@@ -28,6 +28,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 import alt.android.os.CountDownTimer;
+import android.Manifest;
 import android.annotation.SuppressLint;
 //import android.app.Activity;
 import android.app.AlertDialog;
@@ -36,6 +37,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 //import android.database.Cursor;
@@ -52,6 +54,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -78,6 +82,8 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.larswerkman.holocolorpicker.ColorPicker.OnColorChangedListener;
+
+//import com.ledpixelart.piledriver.R;
 //import com.larswerkman.holocolorpicker.OpacityBar;
 //import com.larswerkman.holocolorpicker.SVBar;
 import com.ledpixelart.pixel.hardware.Pixel;
@@ -216,6 +222,36 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
     //private boolean incomingPhoneCall = false;
     //private boolean incomingSMS = false;
     private boolean isAppInBackground = false;
+    public static final int MY_PERMISSIONS_REQUEST_RECEIVE_SMS = 123;
+    
+    public void onRequestPermissionsResult(int requestCode,
+            String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_RECEIVE_SMS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // sd card operations you  need to do
+                	//sdCardPermission_ = true;
+                } else {
+                    //showToast("Very sorry, this app will not function without access to internal storage.");
+                	// permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                	//sdCardPermission_ = false;
+                	//we'll show the user a prompt lettig them know what's going on next
+                	
+                	AlertDialog.Builder alert=new AlertDialog.Builder(this);
+       	 	      	alert.setTitle("SMS Access").setIcon(R.drawable.icon).setMessage("This app will work but you won't be able to display text messages.\n\n").setNeutralButton("OK", null).show();
+                	
+                }
+                return;
+              
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
 	
 
     @Override
@@ -244,6 +280,36 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         setPreferences();
         //***************************
         
+    	if (ContextCompat.checkSelfPermission(ScrollingTextActivity.this,
+   		        Manifest.permission.RECEIVE_SMS)
+   		        != PackageManager.PERMISSION_GRANTED) {
+
+	   		    // Permission is not granted
+	   		    // Should we show an explanation?
+   		    if (ActivityCompat.shouldShowRequestPermissionRationale(ScrollingTextActivity.this,
+   		            Manifest.permission.RECEIVE_SMS)) {
+   		    	//this only gets shown if the user previously denied the request
+   		    	//showToast("This app will copy GIFs to your local storage and will not function without access"); 
+   		    	//AlertDialog.Builder alert=new AlertDialog.Builder(this);
+   	 	      	//alert.setTitle("Internal Storage Access").setIcon(R.drawable.icon).setMessage("Hey there, this app will copy GIF and PNG images to your internal storage in the pixel directory and will not function without this access.\n\nPlease grant access when prompted.\n\n").setNeutralButton("OK", null).show();
+   		        // Show an explanation to the user *asynchronously* -- don't block
+   		        // this thread waiting for the user's response! After the user
+   		        // sees the explanation, try again to request the permission.
+   		    } else {
+   		        // No explanation needed; request the permission
+   		        ActivityCompat.requestPermissions(ScrollingTextActivity.this,
+   		                new String[]{Manifest.permission.RECEIVE_SMS},
+   		                MY_PERMISSIONS_REQUEST_RECEIVE_SMS);
+
+   		        // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+   		        // app-defined int constant. The callback method gets the
+   		        // result of the request.
+   		    }
+   		} else {
+   		    // Permission has already been granted so we are good
+   			//sdCardPermission_ = true;
+   		}
+        
         textField = (EditText) findViewById(R.id.textField);  //the scrolling text
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
         
@@ -260,7 +326,6 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
         prefFontPosition = savePrefs.getInt("fontPositionKey", 0);
         
         textField.setText(prefScrollingText);
-       
         
         picker = (ColorPicker) findViewById(R.id.picker);
 		//svBar = (SVBar) findViewById(R.id.svbar);
@@ -287,9 +352,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
 		   	   .setOAuthAccessTokenSecret("");
 		   	twitterFactory = new TwitterFactory(cb.build());
 		   	twitter = twitterFactory.getInstance();
-	   	
 		}
-	   	
 	   
 	   // VerticalPositionSeekBar.setOnSeekBarChangeListener(OnSeekBarProgress);
 		
@@ -792,7 +855,7 @@ public class ScrollingTextActivity extends IOIOActivity implements OnColorChange
        return true;
     }
     
-    
+   
 
 
 @Override
