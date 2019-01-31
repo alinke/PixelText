@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/PixelText.iml" filepath="$PROJECT_DIR$/.idea/PixelText.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PixelText.iml" filepath="$PROJECT_DIR$/PixelText.iml" />
+      <module fileurl="file://$PROJECT_DIR$/holoColorPicker/holoColorPicker.iml" filepath="$PROJECT_DIR$/holoColorPicker/holoColorPicker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pixelText/pixelText.iml" filepath="$PROJECT_DIR$/pixelText/pixelText.iml" />
     </modules>
   </component>
 </project>

@@ -1,0 +1,24 @@
+com.larswerkman.holocolorpicker
+attr bar_length
+attr bar_orientation_horizontal
+attr bar_pointer_halo_radius
+attr bar_pointer_radius
+attr bar_thickness
+attr color_center_halo_radius
+attr color_center_radius
+attr color_pointer_halo_radius
+attr color_pointer_radius
+attr color_wheel_radius
+attr color_wheel_thickness
+dimen bar_length
+dimen bar_pointer_halo_radius
+dimen bar_pointer_radius
+dimen bar_thickness
+dimen color_center_halo_radius
+dimen color_center_radius
+dimen color_pointer_halo_radius
+dimen color_pointer_radius
+dimen color_wheel_radius
+dimen color_wheel_thickness
+styleable ColorBars bar_length bar_orientation_horizontal bar_pointer_halo_radius bar_pointer_radius bar_thickness
+styleable ColorPicker color_center_halo_radius color_center_radius color_pointer_halo_radius color_pointer_radius color_wheel_radius color_wheel_thickness

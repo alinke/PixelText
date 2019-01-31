@@ -1,0 +1,4 @@
+#Wed Jan 30 22:01:21 PST 2019
+base.0=/Users/al/Documents/workspace 2/PixelText/pixelText/build/intermediates/transforms/dexMerger/debug/0
+path.0=classes.dex
+renamed.0=classes.dex
