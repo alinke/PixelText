@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="7d9fc936-c66c-4b48-a499-a017b4d777a2" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bin/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/PixelText.apk" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/classes.dex" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/dexedLibs/android-support-v4-84a4c48d7b35ba2677d86df47bed3539.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/dexedLibs/android-support-v7-appcompat-818d15529720de9acab67bee0bd00eea.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/dexedLibs/annotations-271a222a04f71ccada58cbbb64806167.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/dexedLibs/holocolorpicker-c3fabe9444a5e6fc82d5944004d8130a.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/dexedLibs/httpclient-4.3.4-ff5ebb445b64086af3dc8ba2c0e08eca.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/dexedLibs/httpcore-4.3.2-84d9be2f6614aff9cc78c0e7cf2414d0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/dexedLibs/ioiolibaccessory-d92c9f1439f773d5d4102c60f9a46cfc.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/dexedLibs/ioiolibandroid-9c4f96b6c9eea77f35611d15495c9206.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/dexedLibs/ioiolibbt-54da840a2f18a979cfdfcc64d890ec3d.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/dexedLibs/twitter4j-core-4.0.2-c53e17bef40db88ca16b84b142c1b829.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-hdpi/ic_action_bluetooth.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-hdpi/ic_action_bluetooth_searching.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-hdpi/ic_action_camera.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-hdpi/ic_action_download.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-hdpi/ic_action_search.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-hdpi/ic_action_settings.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-hdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-hdpi/ic_menu_database.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-hdpi/ic_menu_info_details.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-hdpi/ic_menu_preferences.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-hdpi/icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-ldpi/ic_action_bluetooth_searching.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-ldpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-ldpi/ic_menu_database.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-ldpi/ic_menu_info_details.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-ldpi/ic_menu_preferences.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-ldpi/icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/backgroundblue.9.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/blank.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/ic_action_bluetooth.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/ic_action_bluetooth_searching.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/ic_action_camera.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/ic_action_download.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/ic_action_search.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/ic_action_settings.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/ic_menu_database.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/ic_menu_info_details.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/ic_menu_preferences.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-mdpi/splash.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-xhdpi/ic_action_bluetooth.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-xhdpi/ic_action_bluetooth_searching.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-xhdpi/ic_action_camera.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-xhdpi/ic_action_download.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-xhdpi/ic_action_search.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-xhdpi/ic_action_settings.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-xhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/res/crunch/drawable-xhdpi/icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/resources.ap_" beforeDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="-402205369">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="1" />
+          <entry key="project.open.time.0" value="1" />
+          <entry key="project.opened" value="1" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="y" value="23" />
+    <option name="width" value="1440" />
+    <option name="height" value="823" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="ProjectPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="&lt;template&gt;" type="Applet" default="true" selected="false">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" default="true" selected="false">
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7d9fc936-c66c-4b48-a499-a017b4d777a2" name="Default Changelist" comment="" />
+      <created>1548913273090</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1548913273090</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="23" width="1440" height="823" extended-state="0" />
+    <layout>
+      <window_info id="Capture Tool" />
+      <window_info active="true" content_ui="combo" id="Project" visible="true" weight="0.32980973" />
+      <window_info id="Structure" side_tool="true" />
+      <window_info id="Image Layers" />
+      <window_info id="Designer" />
+      <window_info id="Favorites" side_tool="true" />
+      <window_info id="Captures" order="0" weight="0.25" />
+      <window_info anchor="bottom" id="TODO" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="right" id="Capture Analysis" />
+      <window_info anchor="right" id="Theme Preview" />
+      <window_info anchor="right" id="Palette&#9;" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+</project>
